@@ -37,8 +37,25 @@ new class extends Component
                     <x-nav-link :href="route('employees')" :active="request()->routeIs('employees')" wire:navigate>
                         {{ __('Employees') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('attendance')" :active="request()->routeIs('attendance')" wire:navigate>
+                        {{ __('Attendance') }}
+                    </x-nav-link>
+
+                     <x-nav-link :href="route('employee-payroll')" :active="request()->routeIs('employee-payroll')" wire:navigate>
+                        {{ __('Employee Payroll') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="route('payroll')" :active="request()->routeIs('payroll')" wire:navigate>
                         {{ __('Payroll') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('tax-table')" :active="request()->routeIs('tax-table')" wire:navigate>
+                        {{ __('Tax Table') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('settings')" :active="request()->routeIs('settings')" wire:navigate>
+                        {{ __('Settings') }}
                     </x-nav-link>
                 </div>
             </div>

@@ -1,336 +1,880 @@
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-200">
 
-    <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 p-4 bg-white">
-
-        <!-- Dropdown -->
-        <div>
-            <button id="dropdownActionButton"
-                    data-dropdown-toggle="dropdownAction"
-                    class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5"
-                    type="button">
-
-                <span class="sr-only">Action button</span>
-
-                Action
-
-                <svg class="w-3 h-3 ms-2"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 10 6">
-
-                    <path stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="m1 1 4 4 4-4"/>
-                </svg>
-            </button>
-
-            <!-- Dropdown menu -->
-            <div id="dropdownAction"
-                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
-
-                <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                    aria-labelledby="dropdownActionButton">
-
-                    <li>
-                        <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                            Reward
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                            Promote
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#"
-                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                            Archive
-                        </a>
-                    </li>
-                </ul>
-
-                <div class="py-1">
-                    <a href="#"
-                    class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                        Delete
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Search -->
-        <label for="table-search" class="sr-only">Search</label>
+    <!-- Top Bar -->
+    <div class="flex items-center justify-between flex-wrap md:flex-row p-4 bg-white gap-4">
 
         <div class="relative">
-            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-
-                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 20">
-
-                    <path stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                </svg>
-            </div>
-
             <input type="text"
-                id="table-search"
-                class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Search users">
+                   class="block p-2 ps-10 text-sm border border-gray-300 rounded-lg w-80 bg-gray-50"
+                   placeholder="Search employees...">
+
+            <div class="absolute inset-y-0 left-0 flex items-center ps-3">
+                🔍
+            </div>
         </div>
+
     </div>
 
-    <!-- Table -->
-    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <!-- TABLE -->
+    <table class="w-full text-sm text-left text-gray-600">
 
-        <thead class="text-sm text-gray-700 uppercase bg-gray-50 dark:bg-gray-200 dark:text-gray-900">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
             <tr>
-                <th scope="col" class="p-4">
-                    <div class="flex items-center">
-                        <input id="checkbox-all-search"
-                            type="checkbox"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500">
-
-                        <label for="checkbox-all-search" class="sr-only">
-                            checkbox
-                        </label>
-                    </div>
-                </th>
-
-                <th scope="col" class="px-6 py-3">
-                    Name
-                </th>
-
-                <th scope="col" class="px-6 py-3">
-                    Position
-                </th>
-
-                 <th scope="col" class="px-6 py-3">
-                    Salary
-                </th>
-
-                <th scope="col" class="px-6 py-3">
-                    Status
-                </th>
-
-                <th scope="col" class="px-6 py-3">
-                    Action
-                </th>
+                <th class="p-4"><input type="checkbox"></th>
+                <th class="px-6 py-3">Employee</th>
+                <th class="px-6 py-3">Position</th>
+                <th class="px-6 py-3">Department</th>
+                <th class="px-6 py-3">Salary</th>
+                <th class="px-6 py-3">Status</th>
+                <th class="px-6 py-3">Action</th>
             </tr>
         </thead>
 
         <tbody>
-            @foreach ($employees as $employee)
+
+            @forelse ($employees as $employee)
                 <tr class="bg-white border-b hover:bg-gray-50">
 
-                    <td class="w-4 p-4">
-                        <div class="flex items-center">
-                            <input type="checkbox"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500">
-                        </div>
-                    </td>
+                    <td class="p-4"><input type="checkbox"></td>
 
-                    <th scope="row"
-                        class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap">
+                    <!-- EMPLOYEE -->
+                    <td class="px-6 py-4 flex items-center gap-3">
 
-                        <img class="w-10 h-10 rounded-full"
-                            src="https://flowbite.com/docs/images/people/profile-picture-1.jpg"
-                            alt="Neil Sims">
+                        <img src="https://ui-avatars.com/api/?name={{ $employee->name }}"
+                             class="w-10 h-10 rounded-full">
 
-                        <div class="ps-3">
-                            <div class="text-base font-semibold">
+                        <div>
+                            <div class="font-semibold text-gray-900">
                                 {{ $employee->name }}
                             </div>
 
-                            <div class="font-normal text-gray-500">
-                                {{-- {{ $employee->email }} --}}
-                                Email Address
+                            <div class="text-xs text-gray-500">
+                                {{ $employee->email }}
+                            </div>
+
+                            <div class="text-xs text-gray-400">
+                                {{ $employee->employee_code }}
                             </div>
                         </div>
-                    </th>
 
-                    <td class="px-6 py-4">
-                        {{ $employee->position }}
+                    </td>
+
+                    <td class="px-6 py-4">{{ $employee->position }}</td>
+                    <td class="px-6 py-4">{{ $employee->department }}</td>
+
+                    <td class="px-6 py-4 font-medium text-green-600">
+                        ₱{{ number_format($employee->monthly_salary, 2) }}
                     </td>
 
                     <td class="px-6 py-4">
-                        ₱{{ number_format($employee->salary, 2) }}
+                        <span class="px-2 py-1 text-xs rounded-full
+                            {{ $employee->status === 'Active'
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-red-100 text-red-700' }}">
+                            {{ $employee->status }}
+                        </span>
                     </td>
 
+                    <!-- ACTION -->
                     <td class="px-6 py-4">
-                        <div class="flex items-center">
-                            <div class="h-2.5 w-2.5 rounded-full bg-green-400 me-2"></div>
-                            Online
+
+                        <!-- Dropdown Button -->
+                        <button id="dropdownButton{{ $employee->id }}"
+                                data-dropdown-toggle="dropdown{{ $employee->id }}"
+                                class="inline-flex items-center px-3 py-2 text-xs font-medium border rounded-lg hover:bg-gray-100"
+                                type="button">
+
+                            Actions
+
+                            <svg class="w-3 h-3 ms-2" viewBox="0 0 10 6" fill="none">
+                                <path stroke="currentColor"
+                                    stroke-width="2"
+                                    d="m1 1 4 4 4-4"/>
+                            </svg>
+
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div id="dropdown{{ $employee->id }}"
+                            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+
+                            <ul class="py-2 text-sm text-gray-700">
+
+                                <!-- VIEW -->
+                                <li>
+                                    <button
+                                        type="button"
+                                        class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                                        data-modal-target="crud-modal"
+                                        data-modal-toggle="crud-modal"
+                                        wire:click="modalShow({{ $employee->id }})">
+
+                                        View Employee
+                                    </button>
+                                </li>
+
+                                <li>
+                                    <button
+                                        type="button"
+                                        class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                                        data-modal-target="crud-modal"
+                                        data-modal-toggle="crud-modal"
+                                        wire:click="modalShow({{ $employee->id }})">
+
+                                        View Attendance
+                                    </button>
+                                </li>
+
+                                <!-- DELETE -->
+                                <li>
+                                    <button
+                                        type="button"
+                                        class="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
+                                        wire:click="delete({{ $employee->id }})">
+
+                                        Delete
+                                    </button>
+                                </li>
+
+                            </ul>
+
                         </div>
+
                     </td>
 
-                    <td class="px-6 py-4">
-                        <a href="#"
-                        class="font-medium text-blue-600 hover:underline"
-                        data-modal-target="crud-modal" 
-                        data-modal-toggle="crud-modal"
-                        wire:click="modalShow('{{ $employee->id }}')"
-                        >
-                            View User
-                        </a>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" class="text-center py-6 text-gray-500">
+                        No employees found.
                     </td>
                 </tr>
-            @endforeach
+            @endforelse
+
         </tbody>
+
     </table>
 
-
-    <!-- Modal toggle -->
-    {{-- <button 
-        data-modal-target="crud-modal" 
-        data-modal-toggle="crud-modal"
-        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
-        type="button">
-
-        Toggle modal
-    </button> --}}
-
-    <!-- Main modal -->
+    <!-- MODAL -->
     <div id="crud-modal"
-        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 
-                justify-center items-center w-full md:inset-0 h-full 
-                backdrop-blur-sm bg-black/20">
+        wire:ignore.self
+        class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
 
-        <div class="relative p-4 w-full max-w-4xl max-h-full">
+        <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden">
 
-            <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-600">
+            <!-- HEADER -->
+            <div class="relative bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 text-white">
 
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <div class="flex justify-between items-start">
 
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                        {{-- {{ $employee_modal->name ?? 'Employee Details' }} --}}
-                    </h3>
+                    <div class="flex items-center gap-4">
 
-                    <button type="button"
-                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                            data-modal-hide="crud-modal">
+                        <!-- AVATAR -->
+                        <img
+                            src="https://ui-avatars.com/api/?name={{ urlencode($name ?? 'Employee') }}&background=ffffff&color=2563eb"
+                            class="w-16 h-16 rounded-full border-4 border-white shadow">
 
-                        <svg class="w-3 h-3"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 14 14">
+                        <div>
 
-                            <path stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="m1 1 6 6 6-6M1 13l6-6 6 6"/>
-                        </svg>
+                            <h2 class="text-2xl font-bold">
+                                {{ $name ?? 'Employee Details' }}
+                            </h2>
 
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </div>
+                            <p class="text-blue-100 text-sm">
+                                {{ $position ?? '-' }}
+                            </p>
 
-                <!-- Modal body -->
-                <form class="p-4 md:p-5">
+                            <div class="mt-2">
 
-                    <div class="grid gap-4 mb-4 grid-cols-2">
+                                <span class="px-3 py-1 text-xs rounded-full font-medium
 
-                        <div class="col-span-2">
-                            <label for="name"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{ ($status ?? '') === 'Active'
+                                        ? 'bg-green-100 text-green-700'
+                                        : 'bg-red-100 text-red-700' }}">
 
-                                Name
-                            </label>
+                                    {{ $status ?? '-' }}
 
-                            <input type="text"
-                                name="name"
-                                id="name"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                placeholder="Type product name"
-                                disabled>
+                                </span>
+
+                            </div>
+
                         </div>
 
-                        <div class="col-span-2 sm:col-span-1">
-
-                            <label for="price"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-
-                                Price
-                            </label>
-
-                            <input type="number"
-                                name="price"
-                                id="price"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                placeholder="$2999"
-                                disabled>
-                        </div>
-
-                        <div class="col-span-2 sm:col-span-1">
-
-                            <label for="category"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-
-                                Category
-                            </label>
-
-                            <select id="category"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                    disabled>
-
-                                <option selected>Select category</option>
-                                <option value="TV">TV/Monitors</option>
-                                <option value="PC">PC</option>
-                                <option value="GA">Gaming/Console</option>
-                                <option value="PH">Phones</option>
-                            </select>
-                        </div>
-
-                        <div class="col-span-2">
-
-                            <label for="description"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-
-                                Product Description
-                            </label>
-
-                            <textarea id="description"
-                                    rows="4"
-                                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="Write product description here"
-                                    disabled></textarea>
-                        </div>
                     </div>
 
-                    <button type="submit"
-                            class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    <!-- CLOSE -->
+                    <button
+                        data-modal-hide="crud-modal"
+                        class="text-white hover:bg-white/20 rounded-lg p-2 transition">
 
-                        <svg class="me-1 -ms-1 w-5 h-5"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
+                        ✕
 
-                            <path fill-rule="evenodd"
-                                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-
-                        Add new product
                     </button>
-                </form>
+
+                </div>
+
             </div>
+
+            <!-- BODY -->
+            <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+
+                <!-- PERSONAL & EMPLOYMENT -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <!-- PERSONAL -->
+                    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5">
+
+                        <h3 class="text-lg font-bold text-gray-800 mb-5">
+                            Personal Information
+                        </h3>
+
+                        <div class="space-y-4">
+
+                            <!-- NAME -->
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    Full Name
+                                </label>
+
+                                @if($isEditing)
+
+                                    <input
+                                        type="text"
+                                        wire:model="name"
+                                        class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                @else
+
+                                    <div class="mt-1 text-gray-800 font-medium">
+                                        {{ $name }}
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+                            <!-- EMAIL -->
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    Email Address
+                                </label>
+
+                                @if($isEditing)
+
+                                    <input
+                                        type="email"
+                                        wire:model="email"
+                                        class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                @else
+
+                                    <div class="mt-1 text-gray-800 font-medium">
+                                        {{ $email }}
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+                            <!-- PHONE -->
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    Phone Number
+                                </label>
+
+                                @if($isEditing)
+
+                                    <input
+                                        type="text"
+                                        wire:model="phone_number"
+                                        class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                @else
+
+                                    <div class="mt-1 text-gray-800 font-medium">
+                                        {{ $phone_number }}
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- EMPLOYMENT -->
+                    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5">
+
+                        <h3 class="text-lg font-bold text-gray-800 mb-5">
+                            Employment Details
+                        </h3>
+
+                        <div class="space-y-4">
+
+                            <!-- EMPLOYEE CODE -->
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    Employee Code
+                                </label>
+
+                                <div class="mt-1 text-gray-800 font-medium">
+                                    {{ $employee_modal->employee_code ?? '-' }}
+                                </div>
+
+                            </div>
+
+                            <!-- POSITION -->
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    Position
+                                </label>
+
+                                @if($isEditing)
+
+                                    <input
+                                        type="text"
+                                        wire:model="position"
+                                        class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                @else
+
+                                    <div class="mt-1 text-gray-800 font-medium">
+                                        {{ $position }}
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+                            <!-- DEPARTMENT -->
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    Department
+                                </label>
+
+                                @if($isEditing)
+
+                                    <input
+                                        type="text"
+                                        wire:model="department"
+                                        class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                @else
+
+                                    <div class="mt-1 text-gray-800 font-medium">
+                                        {{ $department }}
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+                            <!-- SALARY -->
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    Monthly Salary
+                                </label>
+
+                                @if($isEditing)
+
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        wire:model="monthly_salary"
+                                        class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                @else
+
+                                    <div class="mt-1 text-green-600 font-bold text-lg">
+                                        ₱{{ number_format($monthly_salary ?? 0, 2) }}
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+                            <!-- STATUS -->
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    Status
+                                </label>
+
+                                @if($isEditing)
+
+                                    <select
+                                        wire:model="status"
+                                        class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                        <option value="Active">
+                                            Active
+                                        </option>
+
+                                        <option value="Inactive">
+                                            Inactive
+                                        </option>
+
+                                    </select>
+
+                                @else
+
+                                    <div class="mt-1">
+                                        <span class="px-3 py-1 rounded-full text-xs font-medium
+
+                                            {{ $status === 'Active'
+                                                ? 'bg-green-100 text-green-700'
+                                                : 'bg-red-100 text-red-700' }}">
+
+                                            {{ $status }}
+
+                                        </span>
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    
+                    <!-- ALLOWANCES -->
+                    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5">
+
+                        <div class="flex items-center justify-between mb-5">
+
+                            <h3 class="text-lg font-bold text-gray-800">
+                                Allowances
+                            </h3>
+
+                            @if($isEditing)
+
+                                <button
+                                    wire:click="addAllowance"
+                                    type="button"
+                                    class="px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
+
+                                    + Add Allowance
+
+                                </button>
+
+                            @endif
+
+                        </div>
+
+                        <!-- ALLOWANCES LIST -->
+                        <div class="space-y-4">
+
+                            @forelse($allowances as $index => $allowance)
+
+                                <div class="bg-white border border-gray-200 rounded-xl p-4">
+
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                                        <!-- NAME -->
+                                        <div>
+
+                                            <label class="text-xs uppercase tracking-wide text-gray-500">
+                                                Allowance Name
+                                            </label>
+
+                                            @if($isEditing)
+
+                                                <input
+                                                    type="text"
+                                                    wire:model="allowances.{{ $index }}.name"
+                                                    class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                            @else
+
+                                                <div class="mt-1 font-medium text-gray-800">
+                                                    {{ $allowance['name'] }}
+                                                </div>
+
+                                            @endif
+
+                                        </div>
+
+                                        <!-- AMOUNT -->
+                                        <div>
+
+                                            <label class="text-xs uppercase tracking-wide text-gray-500">
+                                                Amount
+                                            </label>
+
+                                            @if($isEditing)
+
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    wire:model="allowances.{{ $index }}.amount"
+                                                    class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                            @else
+
+                                                <div class="mt-1 font-bold text-green-600">
+                                                    ₱{{ number_format($allowance['amount'], 2) }}
+                                                </div>
+
+                                            @endif
+
+                                        </div>
+
+                                        <!-- ACTION -->
+                                        <div class="flex items-end justify-end">
+
+                                            @if($isEditing)
+
+                                                <button
+                                                    wire:click="removeAllowance({{ $index }})"
+                                                    type="button"
+                                                    class="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-xl text-sm">
+
+                                                    Remove
+
+                                                </button>
+
+                                            @endif
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            @empty
+
+                                <div class="text-sm text-gray-500 text-center py-6">
+
+                                    No allowances found.
+
+                                </div>
+
+                            @endforelse
+
+                        </div>
+
+                    </div>
+
+                    <!-- DEDUCTIONS -->
+                    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5">
+
+                        <div class="flex items-center justify-between mb-5">
+
+                            <h3 class="text-lg font-bold text-gray-800">
+                                Deductions
+                            </h3>
+
+                            @if($isEditing)
+
+                                <button
+                                    wire:click="addDeduction"
+                                    type="button"
+                                    class="px-3 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded-xl">
+
+                                    + Add Deduction
+
+                                </button>
+
+                            @endif
+
+                        </div>
+
+                        <!-- DEDUCTION LIST -->
+                        <div class="space-y-4">
+
+                            @forelse($deductions as $index => $deduction)
+
+                                <div class="bg-white border border-gray-200 rounded-xl p-4">
+
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                                        <!-- NAME -->
+                                        <div>
+
+                                            <label class="text-xs uppercase tracking-wide text-gray-500">
+                                                Deduction Name
+                                            </label>
+
+                                            @if($isEditing)
+
+                                                <input
+                                                    type="text"
+                                                    wire:model="deductions.{{ $index }}.name"
+                                                    class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                            @else
+
+                                                <div class="mt-1 font-medium text-gray-800">
+                                                    {{ $deduction['name'] }}
+                                                </div>
+
+                                            @endif
+
+                                        </div>
+
+                                        <!-- TYPE -->
+                                        <div>
+
+                                            <label class="text-xs uppercase tracking-wide text-gray-500">
+                                                Type
+                                            </label>
+
+                                            @if($isEditing)
+
+                                                <select
+                                                    wire:model="deductions.{{ $index }}.type"
+                                                    class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                                    <option value="Government">
+                                                        Government
+                                                    </option>
+
+                                                    <option value="Loan">
+                                                        Loan
+                                                    </option>
+
+                                                    <option value="Penalty">
+                                                        Penalty
+                                                    </option>
+
+                                                    <option value="Other">
+                                                        Other
+                                                    </option>
+
+                                                </select>
+
+                                            @else
+
+                                                <div class="mt-1 text-gray-700">
+                                                    {{ $deduction['type'] }}
+                                                </div>
+
+                                            @endif
+
+                                        </div>
+
+                                        <!-- AMOUNT -->
+                                        <div>
+
+                                            <label class="text-xs uppercase tracking-wide text-gray-500">
+                                                Amount
+                                            </label>
+
+                                            @if($isEditing)
+
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    wire:model="deductions.{{ $index }}.amount"
+                                                    class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                            @else
+
+                                                <div class="mt-1 font-bold text-red-500">
+                                                    ₱{{ number_format($deduction['amount'], 2) }}
+                                                </div>
+
+                                            @endif
+
+                                        </div>
+
+                                        <!-- REMOVE -->
+                                        <div class="flex items-end justify-end">
+
+                                            @if($isEditing)
+
+                                                <button
+                                                    wire:click="removeDeduction({{ $index }})"
+                                                    type="button"
+                                                    class="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-xl text-sm">
+
+                                                    Remove
+
+                                                </button>
+
+                                            @endif
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            @empty
+
+                                <div class="text-sm text-gray-500 text-center py-6">
+
+                                    No deductions found.
+
+                                </div>
+
+                            @endforelse
+
+                        </div>
+
+                    </div>
+
+                     <!-- LEAVES -->
+                    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5">
+
+                        <h3 class="text-lg font-bold text-gray-800 mb-5">
+                            Leave Credits
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <!-- VACATION LEAVE -->
+                            <div class="bg-white border rounded-xl p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm font-semibold text-gray-800">
+                                            Vacation Leave
+                                        </div>
+                                    </div>
+
+                                    <div class="text-right">
+                                        <div class="text-2xl font-bold text-green-600">
+                                            {{ $availVL }}
+                                        </div>
+
+                                        <div class="text-xs text-gray-500">
+                                            Available
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 border-t pt-3">
+                                    <div class="text-xs uppercase text-gray-500 mb-2">
+                                        Used Leave Dates ({{ count($vacationLeaves) }})
+                                    </div>
+
+                                    @forelse($vacationLeaves as $date)
+                                        <div class="flex justify-between py-1">
+                                            <span class="text-sm text-gray-700">
+                                                {{ \Carbon\Carbon::parse($date)->format('M d, Y - D') }}
+                                            </span>
+                                        </div>
+                                    @empty
+                                        <div class="text-sm text-gray-400">
+                                            No vacation leaves used.
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+
+                            <!-- SICK LEAVE -->
+                            <div class="bg-white border rounded-xl p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm font-semibold text-gray-800">
+                                            Sick Leave
+                                        </div>
+                                    </div>
+
+                                    <div class="text-right">
+                                        <div class="text-2xl font-bold text-blue-600">
+                                            {{ $availSL }}
+                                        </div>
+                                        <div class="text-xs text-gray-500">
+                                            Available
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="mt-4 border-t pt-3">
+                                    <div class="text-xs uppercase text-gray-500 mb-2">
+                                        Used Leave Dates ({{ count($sickLeaves) }})
+                                    </div>
+
+                                    @forelse($sickLeaves as $date)
+                                        <div class="flex justify-between py-1">
+                                            <span class="text-sm text-gray-700">
+                                                {{ \Carbon\Carbon::parse($date)->format('M d, Y - D') }}
+                                            </span>
+                                        </div>
+                                    @empty
+                                        <div class="text-sm text-gray-400">
+                                            No sick leaves used.
+                                        </div>
+                                    @endforelse
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="border-t bg-gray-50 px-6 py-4 flex justify-between items-center">
+
+                <!-- SUCCESS -->
+                <div>
+
+                    @if (session()->has('success'))
+
+                        <span class="text-sm text-green-600 font-medium">
+                            {{ session('success') }}
+                        </span>
+
+                    @endif
+
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="flex gap-3">
+
+                    <!-- CLOSE -->
+                    <button
+                        data-modal-hide="crud-modal"
+                        class="px-5 py-2.5 border border-gray-300 rounded-xl hover:bg-gray-100 transition">
+
+                        Close
+
+                    </button>
+
+                    <!-- EDIT -->
+                    @if(!$isEditing)
+
+                        <button
+                            wire:click="editEmployee"
+                            class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition">
+
+                            Edit
+
+                        </button>
+
+                    @endif
+
+                    <!-- SAVE -->
+                    @if($isEditing)
+
+                        <button
+                            wire:click="updateEmployee"
+                            class="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl transition">
+
+                            Save Changes
+
+                        </button>
+
+                    @endif
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
 
 </div>
