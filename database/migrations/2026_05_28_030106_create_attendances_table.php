@@ -32,7 +32,10 @@ return new class extends Migration
                 'Absent',
                 'Late',
                 'Half Day',
-                'On Leave'
+                'On Leave',
+                'Regular Holiday',
+                'Special Non-Working Holiday',
+                
             ])->default('Present');
 
             $table->timestamps();

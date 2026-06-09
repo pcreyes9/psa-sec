@@ -62,6 +62,41 @@
 
             </div>
 
+            <!-- LEAVE SETTINGS -->
+            <div class="bg-white border rounded-2xl p-6">
+
+                <h3 class="text-lg font-semibold mb-5">
+                    Leave Settings
+                </h3>
+                <div>
+
+                    <x-input-label
+                        for="vacation_leave"
+                        value="Vacation Leave Credits" />
+
+                    <x-text-input
+                        wire:model="vacation_leave"
+                        type="number"
+                        step="1"
+                        class="mt-1 block w-full" />
+
+                </div>
+
+                <div>
+
+                    <x-input-label
+                        for="sick_leave"
+                        value="Sick Leave Credits" />
+
+                    <x-text-input
+                        wire:model="sick_leave"
+                        type="number"
+                        step="1"
+                        class="mt-1 block w-full" />
+
+                </div>
+            </div>
+
             <!-- NIGHT DIFFERENTIAL -->
             <div class="bg-white border rounded-2xl p-6">
 
@@ -86,7 +121,7 @@
 
                     <x-input-label
                         for="night_diff_rate"
-                        value="Night Differential Rate" />
+                        value="Night Differential Rate %" />
 
                     <x-text-input
                         wire:model="night_diff_rate"
@@ -99,81 +134,81 @@
             </div>
 
             <!-- OT SETTINGS -->
-        <div class="bg-white border rounded-2xl p-6">
+            <div class="bg-white border rounded-2xl p-6">
 
-            <h3 class="text-lg font-semibold mb-5">
-                Overtime Settings
-            </h3>
+                <h3 class="text-lg font-semibold mb-5">
+                    Overtime Settings
+                </h3>
 
-            <div>
+                <div>
 
-                <x-input-label
-                    for="weekday_ot_rate"
-                    value="Weekday OT Rate" />
+                    <x-input-label
+                        for="weekday_ot_rate"
+                        value="Weekday OT Rate %" />
 
-                <x-text-input
-                    wire:model="weekday_ot_rate"
-                    type="number"
-                    step="0.01"
-                    class="mt-1 block w-full" />
+                    <x-text-input
+                        wire:model="weekday_ot_rate"
+                        type="number"
+                        step="1.00"
+                        class="mt-1 block w-full" />
+
+                </div>
+
+                <div>
+
+                    <x-input-label
+                        for="weekend_ot_rate"
+                        value="Weekend OT Rate %" />
+
+                    <x-text-input
+                        wire:model="weekend_ot_rate"
+                        type="number"
+                        step="1.00"
+                        class="mt-1 block w-full" />
+
+                </div>
+            </div>
+
+            <!-- Holiday SETTINGS -->
+            <div class="bg-white border rounded-2xl p-6">
+
+                <h3 class="text-lg font-semibold mb-5">
+                    Holiday Settings
+                </h3>
+
+                <div>
+
+                    <x-input-label
+                        for="reg_holiday_rate"
+                        value="Regular Holiday Rate %" />
+
+                    <x-text-input
+                        wire:model="reg_holiday_rate"
+                        type="number"
+                        step="1.00"
+                        class="mt-1 block w-full" />
+
+                </div>
+
+                <div>
+
+                    <x-input-label
+                        for="non_working_holiday_rate"
+                        value="Non-Working Holiday Rate %" />
+
+                    <x-text-input
+                        wire:model="non_working_holiday_rate"
+                        type="number"
+                        step="1.00"
+                        class="mt-1 block w-full" />
+
+                </div>
+
 
             </div>
 
-            <div>
-
-                <x-input-label
-                    for="weekend_ot_rate"
-                    value="Weekend OT Rate" />
-
-                <x-text-input
-                    wire:model="weekend_ot_rate"
-                    type="number"
-                    step="0.01"
-                    class="mt-1 block w-full" />
-
-            </div>
-
-
+            
         </div>
-
-        <!-- LEAVE SETTINGS -->
-        <div class="bg-white border rounded-2xl p-6">
-
-            <h3 class="text-lg font-semibold mb-5">
-                Leave Settings
-            </h3>
-            <div>
-
-                <x-input-label
-                    for="vacation_leave"
-                    value="Vacation Leave Credits" />
-
-                <x-text-input
-                    wire:model="vacation_leave"
-                    type="number"
-                    step="1"
-                    class="mt-1 block w-full" />
-
-            </div>
-
-            <div>
-
-                <x-input-label
-                    for="sick_leave"
-                    value="Sick Leave Credits" />
-
-                <x-text-input
-                    wire:model="sick_leave"
-                    type="number"
-                    step="1"
-                    class="mt-1 block w-full" />
-
-            </div>
-        </div>
-
-        </div>
-
-        
 
         <!-- SAVE -->
         <div class="flex justify-end">

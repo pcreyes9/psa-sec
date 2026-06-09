@@ -22,6 +22,9 @@ class Settings extends Component
     public $vacation_leave;
     public $sick_leave;
 
+    public $reg_holiday_rate;
+    public $non_working_holiday_rate;
+
     public function mount()
     {
         $this->time_in = Setting::get(
@@ -51,17 +54,27 @@ class Settings extends Component
 
         $this->weekday_ot_rate = Setting::get(
             'weekday_ot_rate',
-            1.25
+            125
         );
 
         $this->weekend_ot_rate = Setting::get(
             'weekend_ot_rate',
-            1.30
+            130
+        );
+
+        $this->reg_holiday_rate = Setting::get(
+            'reg_holiday_rate',
+            125
+        );
+
+        $this->non_working_holiday_rate = Setting::get(
+            'non_working_holiday_rate',
+            130
         );
 
         $this->night_diff_rate = Setting::get(
             'night_diff_rate',
-            0.10
+            10
         );
 
         $this->vacation_leave = Setting::get(
@@ -88,6 +101,9 @@ class Settings extends Component
             'weekday_ot_rate' => 'required|numeric|min:1',
             'weekend_ot_rate' => 'required|numeric|min:1',
             'night_diff_rate' => 'required|numeric|min:0',
+
+            'reg_holiday_rate' => 'required|numeric|min:0',
+            'non_working_holiday_rate' => 'required|numeric|min:0',
 
             'vacation_leave' => 'required|numeric|min:0',
             'sick_leave' => 'required|numeric|min:0'
@@ -126,6 +142,16 @@ class Settings extends Component
         Setting::set(
             'weekend_ot_rate',
             $this->weekend_ot_rate
+        );
+
+        Setting::set(
+            'reg_holiday_rate',
+            $this->reg_holiday_rate
+        );
+
+        Setting::set(
+            'non_working_holiday_rate',
+            $this->non_working_holiday_rate
         );
 
         Setting::set(
