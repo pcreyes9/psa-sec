@@ -32,11 +32,11 @@ new #[Layout('layouts.guest')] class extends Component
 
         Auth::login($user);
 
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
+        $this->redirect(route('employees', absolute: false), navigate: true);
     }
 }; ?>
 
-<div>
+<div class="mx-12">
     <form wire:submit="register">
         <!-- Name -->
         <div>

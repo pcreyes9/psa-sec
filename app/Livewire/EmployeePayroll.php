@@ -9,28 +9,80 @@ use App\Models\Payroll;
 use App\Models\PayrollItem;
 use App\Models\TaxBracket;
 use Carbon\Carbon;
+use App\Models\Setting;
 
 class EmployeePayroll extends Component
 {
-    public $employees = [], $attendanceRecords = [], $deductionBreakdown = [], $preparedPayrolls = [];
+    public $employees = [];
+    public $attendanceRecords = [];
+    public $deductionBreakdown = [];
+    public $preparedPayrolls = [];
+    public $overtimeDates = [];
+
     public $selectedEmployee = null;
-    public $month, $cutoff = '1';
-    public $daysPresent = 0, $regularHours = 0, $overtimeHours = 0, $lateMinutes = 0;
-    public $dailyRate = 0, $hourlyRate = 0;
-    public $basicPay = 0, $overtimePay = 0, $allowances = 0;
-    public $deductions = 0, $otherDeductions = 0, $lateDeduction = 0;
-    public $grossPay = 0, $taxableIncome = 0, $netPay = 0;
+    public $settings;
+
+    public $month;
+    public $cutoff = '1';
+
+    // ATTENDANCE
+    public $daysPresent = 0;
+    public $lateMinutes = 0;
+
+    // RATES
+    public $dailyRate = 0;
+    public $hourlyRate = 0;
+
+    // BASIC PAY
+    public $basicPay = 0;
+    public $allowances = 0;
+
+    public $deductions = 0;
+    public $otherDeductions = 0;
+    public $lateDeduction = 0;
     public $taxDeduction = 0;
 
+    public $grossPay = 0;
+    public $taxableIncome = 0;
+    public $netPay = 0;
+
+    // REGULAR HOURS
+    public $regularHours = 0;
+    public $weekendHours = 0;
+    public $nonWorkingHolidayHours = 0;
+    public $regHolidayHours = 0;
+
+    // OVERTIME HOURS ONLY
     public $weekdayOtHours = 0;
     public $weekendOtHours = 0;
-    public $nightDiffHours = 0;
+    public $nonWorkingHolidayOtHours = 0;
+    public $regHolidayOtHours = 0;
 
+    // OT + ND HOURS
+    public $weekdayOtNdHours = 0;
+    public $weekendOtNdHours = 0;
+    public $nonWorkingHolidayOtNdHours = 0;
+    public $regHolidayOtNdHours = 0;
+
+    // PREMIUM PAY
+    public $weekendPay = 0;
+    public $nonWorkingHolidayPay = 0;
+    public $regHolidayPay = 0;
+
+    // OT PAY
     public $weekdayOtPay = 0;
     public $weekendOtPay = 0;
-    public $nightDiffPay = 0;
+    public $nonWorkingHolidayOtPay = 0;
+    public $regHolidayOtPay = 0;
 
-    public $overtimeDates = [];
+    // OT + ND PAY
+    public $weekdayOtNdPay = 0;
+    public $weekendOtNdPay = 0;
+    public $nonWorkingHolidayOtNdPay = 0;
+    public $regHolidayOtNdPay = 0;
+
+    // TOTAL PREMIUMS
+    public $overtimePay = 0;
 
     public function mount()
     {
@@ -42,6 +94,11 @@ class EmployeePayroll extends Component
             ->get();
 
         $this->month = now()->format('Y-m');
+
+        $this->settings = Setting::pluck(
+            'value',
+            'key'
+        );
     }
 
     public function selectEmployee($id)
@@ -74,51 +131,94 @@ class EmployeePayroll extends Component
             return;
         }
 
+        // ATTENDANCE
         $this->daysPresent = 0;
-        $this->regularHours = 0;
-        $this->overtimeHours = 0;
         $this->lateMinutes = 0;
 
+        // REGULAR HOURS
+        $this->regularHours = 0;
+        $this->weekendHours = 0;
+        $this->regHolidayHours = 0;
+        $this->nonWorkingHolidayHours = 0;
+
+        // OVERTIME HOURS ONLY
+        $this->weekdayOtHours = 0;
+        $this->weekendOtHours = 0;
+        $this->regHolidayOtHours = 0;
+        $this->nonWorkingHolidayOtHours = 0;
+
+        // OT + NIGHT DIFFERENTIAL HOURS
+        $this->weekdayOtNdHours = 0;
+        $this->weekendOtNdHours = 0;
+        $this->regHolidayOtNdHours = 0;
+        $this->nonWorkingHolidayOtNdHours = 0;
+
+        // PAY RATES
         $this->dailyRate = 0;
         $this->hourlyRate = 0;
 
+        // BASIC PAY
         $this->basicPay = 0;
+
+        // PREMIUM PAY
+        $this->weekendPay = 0;
+        $this->regHolidayPay = 0;
+        $this->nonWorkingHolidayPay = 0;
+
+        // OVERTIME PAY
+        $this->weekdayOtPay = 0;
+        $this->weekendOtPay = 0;
+        $this->regHolidayOtPay = 0;
+        $this->nonWorkingHolidayOtPay = 0;
+
+        // OT + NIGHT DIFFERENTIAL PAY
+        $this->weekdayOtNdPay = 0;
+        $this->weekendOtNdPay = 0;
+        $this->regHolidayOtNdPay = 0;
+        $this->nonWorkingHolidayOtNdPay = 0;
+
+        // TOTAL PREMIUMS
         $this->overtimePay = 0;
+
+        // ALLOWANCES
         $this->allowances = 0;
 
+        // DEDUCTIONS
         $this->deductions = 0;
         $this->otherDeductions = 0;
         $this->lateDeduction = 0;
 
-        $this->grossPay = 0;
-        $this->taxableIncome = 0;
-        $this->taxDeduction = 0;
-        $this->netPay = 0;
-
-        $this->weekdayOtHours = 0;
-        $this->weekendOtHours = 0;
-        $this->nightDiffHours = 0;
-
-        $this->weekdayOtPay = 0;
-        $this->weekendOtPay = 0;
-        $this->nightDiffPay = 0;
-
         $this->deductionBreakdown = [];
 
+        // TAX
+        $this->taxableIncome = 0;
+        $this->taxDeduction = 0;
 
+        // PAYROLL TOTALS
+        $this->grossPay = 0;
+        $this->netPay = 0;
+
+        // OVERTIME DATES
+        $this->overtimeDates = [];
+
+
+        $workingHours = (float) $this->settings['working_hours_per_day'];
+
+        // ==========================================
         // ATTENDANCE COMPUTATION
+        // ==========================================
+
         [$year, $month] = explode('-', $this->month);
 
-        if ($this->cutoff == '1') {
+        $dateFrom = $this->cutoff == '1'
+            ? Carbon::create($year, $month, 1)->startOfDay()
+            : Carbon::create($year, $month, 16)->startOfDay();
 
-            $dateFrom = Carbon::create($year, $month, 1)->startOfDay();
-            $dateTo = Carbon::create($year, $month, 15)->endOfDay();
-
-        } else {
-
-            $dateFrom = Carbon::create($year, $month, 16)->startOfDay();
-            $dateTo = Carbon::create($year, $month)->endOfMonth()->endOfDay();
-        }
+        $dateTo = $this->cutoff == '1'
+            ? Carbon::create($year, $month, 15)->endOfDay()
+            : Carbon::create($year, $month)
+                ->endOfMonth()
+                ->endOfDay();
 
         $this->attendanceRecords = Attendance::where(
                 'employee_id',
@@ -126,16 +226,17 @@ class EmployeePayroll extends Component
             )
             ->whereBetween('attendance_date', [
                 $dateFrom->toDateString(),
-                $dateTo->toDateString()
+                $dateTo->toDateString(),
             ])
             ->orderBy('attendance_date')
             ->get();
 
-        if($this->attendanceRecords->isEmpty()) {
+        if ($this->attendanceRecords->isEmpty()) {
             return;
         }
-        
-        // dd($this->attendanceRecords->isEmpty());
+
+        $workingHours =
+            $this->settings['working_hours_per_day'];
 
         foreach ($this->attendanceRecords as $att) {
 
@@ -143,90 +244,129 @@ class EmployeePayroll extends Component
                 continue;
             }
 
+            // ======================================
+            // DATETIME PREPARATION
+            // ======================================
+
+            $attendanceDate = Carbon::parse(
+                $att->attendance_date
+            );
+
             $timeIn = Carbon::parse($att->time_in);
             $timeOut = Carbon::parse($att->time_out);
+
+
+            // Overnight shift
+            if ($timeOut->lt($timeIn)) {
+                $timeOut->addDay();
+            }
+
+            $isWeekend = $attendanceDate->isWeekend();
 
             $hours = round(
                 $timeIn->diffInMinutes($timeOut) / 60,
                 2
             );
 
-            // dd($att->attendance_date, $hours);   
+            // ======================================
+            // REGULAR & OT HOURS
+            // ======================================
 
-            $isWeekend = Carbon::parse(
-                $att->attendance_date
-            )->isWeekend();
+            $regularHours = min(
+                $hours,
+                $workingHours
+            );
 
-            if ($isWeekend) {
+            $otHours = max(
+                0,
+                $hours - $workingHours
+            );
 
-                $ot = $hours;
+            // ======================================
+            // NIGHT DIFFERENTIAL
+            // 10:00 PM - 6:00 AM
+            // ======================================
 
-                $this->weekendOtHours += $ot;
+            $ndStart = $attendanceDate
+                ->copy()
+                ->setTime(22, 0);
 
-            } else {
+            $ndEnd = $attendanceDate
+                ->copy()
+                ->addDay()
+                ->setTime(6, 0);
 
-                $this->regularHours += min(
-                    $hours,
-                    10
-                );
+            $overlapStart = $timeIn->max($ndStart);
+            $overlapEnd = $timeOut->min($ndEnd);
 
-                $computedOT = max(
-                    0,
-                    $hours - 10
-                );
+            $ndHours = 0;
 
-                $ot = $computedOT > 1
-                    ? $computedOT
-                    : 0;
+            if ($overlapStart->lt($overlapEnd)) {
 
-                $this->weekdayOtHours += $ot;
-            }
-
-            if ($ot > 0) {
-
-                $this->overtimeDates[] = [
-
-                    'date' => $att->attendance_date,
-
-                    'day' => Carbon::parse(
-                        $att->attendance_date
-                    )->format('l'),
-
-                    'hours' => round($ot, 2),
-
-                    'type' => $isWeekend
-                        ? 'Weekend OT'
-                        : 'Weekday OT',
-                ];
-            }
-
-            $nightStart = Carbon::parse(
-                $att->attendance_date
-            )->setTime(22, 0);
-
-            if ($timeOut->greaterThan($nightStart)) {
-
-                $nightWorkStart =
-                    $timeIn->greaterThan($nightStart)
-                        ? $timeIn
-                        : $nightStart;
-
-                $nightMinutes =
-                    $nightWorkStart->diffInMinutes(
-                        $timeOut
-                    );
-
-                $this->nightDiffHours += round(
-                    $nightMinutes / 60,
+                $ndHours = round(
+                    $overlapStart
+                        ->diffInMinutes($overlapEnd) / 60,
                     2
                 );
             }
 
-            $graceTime = Carbon::parse(
-                $att->attendance_date
-            )->setTime(8, 15);
+            // ======================================
+            // OT + ND SPLIT
+            // ======================================
 
-            if ($timeIn->greaterThan($graceTime)) {
+            $otNdHours = min(
+                $otHours,
+                $ndHours
+            );
+
+            $pureOtHours = max(
+                0,
+                $otHours - $otNdHours
+            );
+
+            // ======================================
+            // CATEGORIZATION
+            // ======================================
+
+            if ($att->status === 'Regular Holiday') {
+
+                $this->regHolidayHours += $regularHours;
+                $this->regHolidayOtHours += $pureOtHours;
+                $this->regHolidayOtNdHours += $otNdHours;
+
+            } elseif (
+                $att->status ===
+                'Special Non-Working Holiday'
+            ) {
+
+                $this->nonWorkingHolidayHours += $regularHours;
+                $this->nonWorkingHolidayOtHours += $pureOtHours;
+                $this->nonWorkingHolidayOtNdHours += $otNdHours;
+
+            } elseif ($isWeekend) {
+
+                $this->weekendHours += $regularHours;
+                $this->weekendOtHours += $pureOtHours;
+                $this->weekendOtNdHours += $otNdHours;
+
+            } else {
+
+                $this->regularHours += $regularHours;
+                $this->weekdayOtHours += $pureOtHours;
+                $this->weekdayOtNdHours += $otNdHours;
+            }
+
+            // ======================================
+            // LATE COMPUTATION
+            // ======================================
+
+            $graceTime = $attendanceDate
+                ->copy()
+                ->setTimeFromTimeString(
+                    $this->settings['grace_period_time']
+                );
+
+            if ($timeIn->gt($graceTime)) {
 
                 $this->lateMinutes +=
                     $graceTime->diffInMinutes(
@@ -234,24 +374,32 @@ class EmployeePayroll extends Component
                     );
             }
 
+            // ======================================
+            // DAYS PRESENT
+            // ======================================
+
             if (
                 in_array(
                     $att->status,
                     [
                         'Present',
-                        'Late'
+                        'Late',
+                        'Regular Holiday',
+                        'Special Non-Working Holiday',
                     ]
                 )
             ) {
                 $this->daysPresent++;
             }
-
         }
 
-        // dd($this->weekendOtHours);
-
+        // ==========================================
         // BASIC PAY COMPUTATION
-        $annualSalary = $this->selectedEmployee->monthly_salary * 12;
+        // ==========================================
+
+        $annualSalary =
+            $this->selectedEmployee
+                ->monthly_salary * 12;
 
         $this->basicPay = round(
             $annualSalary / 24,
@@ -268,34 +416,119 @@ class EmployeePayroll extends Component
             2
         );
 
+        // ==========================================
+        // PREMIUM PAY
+        // ==========================================
+
+        $this->weekendPay = round(
+            $this->weekendHours *
+            $this->hourlyRate *
+            ($this->settings['weekend_rate'] / 100),
+            2
+        );
+
+        $this->nonWorkingHolidayPay = round(
+            $this->nonWorkingHolidayHours *
+            $this->hourlyRate *
+            ($this->settings['non_working_holiday_rate'] / 100),
+            2
+        );
+
+        $this->regHolidayPay = round(
+            $this->regHolidayHours *
+            $this->hourlyRate *
+            ($this->settings['reg_holiday_rate'] / 100),
+            2
+        );
+
+        // ==========================================
+        // OVERTIME PAY
+        // ==========================================
+
         $this->weekdayOtPay = round(
             $this->weekdayOtHours *
             $this->hourlyRate *
-            1.25,
+            ($this->settings['weekday_ot_rate'] / 100),
             2
         );
 
         $this->weekendOtPay = round(
             $this->weekendOtHours *
-            $this->hourlyRate * 
-            1.30,
+            $this->hourlyRate *
+            ($this->settings['weekend_ot_rate'] / 100),
             2
         );
 
-        $this->nightDiffPay = round(
-            $this->nightDiffHours *
+        $this->nonWorkingHolidayOtPay = round(
+            $this->nonWorkingHolidayOtHours *
             $this->hourlyRate *
-            0.10,
+            ($this->settings['non_working_holiday_ot_rate'] / 100),
             2
         );
+
+        $this->regHolidayOtPay = round(
+            $this->regHolidayOtHours *
+            $this->hourlyRate *
+            ($this->settings['reg_holiday_ot_rate'] / 100),
+            2
+        );
+
+        // ==========================================
+        // OT + NIGHT DIFFERENTIAL PAY
+        // ==========================================
+
+        $this->weekdayOtNdPay = round(
+            $this->weekdayOtNdHours *
+            $this->hourlyRate *
+            ($this->settings['weekday_nd_rate'] / 100),
+            2
+        );
+
+        $this->weekendOtNdPay = round(
+            $this->weekendOtNdHours *
+            $this->hourlyRate *
+            ($this->settings['weekend_nd_rate'] / 100),
+            2
+        );
+
+        $this->nonWorkingHolidayOtNdPay = round(
+            $this->nonWorkingHolidayOtNdHours *
+            $this->hourlyRate *
+            ($this->settings['special_holiday_nd_rate'] / 100),
+            2
+        );
+
+        $this->regHolidayOtNdPay = round(
+            $this->regHolidayOtNdHours *
+            $this->hourlyRate *
+            ($this->settings['reg_holiday_nd_rate'] / 100),
+            2
+        );
+
+        // ==========================================
+        // TOTAL PREMIUM PAY
+        // ==========================================
 
         $this->overtimePay = round(
+
+            $this->weekendPay +
+            $this->nonWorkingHolidayPay +
+            $this->regHolidayPay +
+
             $this->weekdayOtPay +
             $this->weekendOtPay +
-            $this->nightDiffPay,
+            $this->nonWorkingHolidayOtPay +
+            $this->regHolidayOtPay +
+
+            $this->weekdayOtNdPay +
+            $this->weekendOtNdPay +
+            $this->nonWorkingHolidayOtNdPay +
+            $this->regHolidayOtNdPay,
 
             2
         );
+
+        // dd($this->hourlyRate, $this->regHolidayOT, $this->regHolidayPay);
 
 
         // dd($this->overtimePay);

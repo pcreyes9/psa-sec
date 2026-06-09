@@ -11,7 +11,10 @@ class Attendance extends Model
         'attendance_date',
         'time_in',
         'time_out',
+        'total_hours',
+        'overtime_hours',
         'status',
+        'remarks',
     ];
 
     protected $casts = [
@@ -20,27 +23,32 @@ class Attendance extends Model
         'time_out' => 'datetime',
     ];
 
-    protected static function booted()
-    {
-        static::saving(function ($attendance) {
+    // protected static function booted()
+    // {
+    //     static::saving(function ($attendance) {
 
-            if ($attendance->time_in && $attendance->time_out) {
+    //         if ($attendance->time_in && $attendance->time_out) {
 
-                $minutes = $attendance->time_in->diffInMinutes($attendance->time_out);
+    //             $minutes = $attendance->time_in->diffInMinutes($attendance->time_out);
 
-                $minutes -= 60; // lunch break
+    //             $minutes -= 60; // lunch break
 
-                $hours = max($minutes / 60, 0);
+    //             $hours = max($minutes / 60, 0);
 
-                $attendance->total_hours = round($hours, 2);
+    //             $attendance->total_hours = round($hours, 2);
 
-                $attendance->overtime_hours = round(max($hours - 8, 0), 2);
-            }
-        });
-    }
+    //             $attendance->overtime_hours = round(max($hours - 8, 0), 2);
+    //         }
+    //     });
+    // }
 
     public function employee()
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
     }
 }

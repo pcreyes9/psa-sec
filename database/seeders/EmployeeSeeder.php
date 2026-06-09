@@ -9,9 +9,16 @@ class EmployeeSeeder extends Seeder
 {
     public function run(): void
     {
+        Employee::truncate();
+
+        Employee::factory()
+            ->count(50)
+            ->create();
+
         $employees = [
 
             [
+                'employee_code' => 'EMP-0001',
                 'name' => 'Mariale Cruz',
                 'email' => 'mariale@example.com',
                 'phone_number' => '09171234567',
@@ -27,6 +34,7 @@ class EmployeeSeeder extends Seeder
             ],
 
             [
+                'employee_code' => 'EMP-0002',
                 'name' => 'Marsha Moreno',
                 'email' => 'marsha@example.com',
                 'phone_number' => '09181234567',
@@ -42,6 +50,7 @@ class EmployeeSeeder extends Seeder
             ],
 
             [
+                'employee_code' => 'EMP-0003',
                 'name' => 'Abigail Alto',
                 'email' => 'abigail@example.com',
                 'phone_number' => '09991234567',
@@ -57,6 +66,7 @@ class EmployeeSeeder extends Seeder
             ],
 
             [
+                'employee_code' => 'EMP-0004',
                 'name' => 'Christine Catalla',
                 'email' => 'christine@example.com',
                 'phone_number' => '09175551234',
@@ -72,6 +82,7 @@ class EmployeeSeeder extends Seeder
             ],
 
             [
+                'employee_code' => 'EMP-0005',
                 'name' => 'Abe Gabrillo',
                 'email' => 'abe@example.com',
                 'phone_number' => '09178889999',
@@ -87,6 +98,7 @@ class EmployeeSeeder extends Seeder
             ],
 
             [
+                'employee_code' => 'EMP-0006',
                 'name' => 'Paul Reyes',
                 'email' => 'paul@example.com',
                 'phone_number' => '09178889999',

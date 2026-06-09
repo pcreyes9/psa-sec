@@ -70,6 +70,7 @@ class AttendanceSeeder extends Seeder
                         Carbon::TUESDAY,
                         Carbon::WEDNESDAY,
                         Carbon::THURSDAY,
+                        Carbon::FRIDAY,
                     ]
                 )
             ) {
@@ -93,11 +94,11 @@ class AttendanceSeeder extends Seeder
                 */
 
                 $timeIn = Carbon::parse(
-                    $startDate->toDateString() . ' 08:00:00'
+                    $startDate->toDateString() . ' 09:00:00'
                 );
 
                 $timeOut = Carbon::parse(
-                    $startDate->toDateString() . ' 18:00:00'
+                    $startDate->toDateString() . ' 17:00:00'
                 );
 
                 /*
@@ -123,7 +124,7 @@ class AttendanceSeeder extends Seeder
 
                 $computedOT = max(
                     0,
-                    $totalHours - 10
+                    $totalHours - 8
                 );
 
                 $overtimeHours = $computedOT > 1

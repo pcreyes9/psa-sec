@@ -27,6 +27,7 @@ class Employees extends Component
     public function mount()
     {
         $this->employees = Employee::latest()->get();
+        // dd($this->employees);
     }
 
     public function render()

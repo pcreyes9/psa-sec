@@ -165,7 +165,9 @@
                             <option value="Absent">Absent</option>
                             <option value="Vacation Leave">Vacation Leave</option>
                             <option value="Sick Leave">Sick Leave</option>
-
+                            <option value="Regular Holiday">Regular Holiday</option>
+                            <option value="Special Non-Working Holiday">Special Non-Working Holiday</option>
+                            <option value="Special Working Holiday">Special Working Holiday</option>
                         </select>
 
                     </div>
@@ -219,11 +221,11 @@
                 <div class="bg-white border border-blue-100 rounded-2xl p-5 shadow-sm">
 
                     <div class="text-xs uppercase tracking-wide text-blue-500">
-                        Total Rendered Hours
+                        Total Regular Hours
                     </div>
 
                     <div class="text-3xl font-bold text-blue-700 mt-2">
-                        {{ number_format($cutoffTotalHours, 2) }}
+                        {{ number_format($attendance->sum('total_hours') - $attendance->sum('overtime_hours'), 2) }}
                     </div>
 
                 </div>
@@ -236,7 +238,7 @@
                     </div>
 
                     <div class="text-3xl font-bold text-orange-600 mt-2">
-                        {{ number_format($cutoffTotalOT, 2) }}
+                        {{ number_format($attendance->sum('overtime_hours'), 2) }}
                     </div>
 
                 </div>
@@ -289,6 +291,10 @@
                                 Status
                             </th>
 
+                            <th class="px-4 py-3 font-semibold">
+                                Actions
+                            </th>
+
                         </tr>
 
                     </thead>
@@ -297,28 +303,6 @@
 
                         @forelse($attendance as $att)
 
-                            @php
-
-                                $hours = 0;
-                                $overtime = 0;
-
-                                if ($att->time_in && $att->time_out) {
-
-                                    $timeIn = \Carbon\Carbon::parse($att->time_in);
-                                    $timeOut = \Carbon\Carbon::parse($att->time_out);
-
-                                    $hours = $timeIn->diffInMinutes($timeOut) / 60;
-
-                                    // OT after 10 hrs
-                                    $computedOT = max(0, $hours - 10);
-
-                                    // Ignore OT if <= 1 hr
-                                    $overtime = $computedOT > 1
-                                        ? $computedOT
-                                        : 0;
-                                }
-
-                            @endphp
 
                             <tr class="hover:bg-gray-50 transition">
 
@@ -356,14 +340,14 @@
                                 <!-- HOURS -->
                                 <td class="px-4 py-3 font-semibold text-gray-700">
 
-                                    {{ number_format($hours, 2) }}
+                                    {{ number_format($att->total_hours, 2) }}
 
                                 </td>
 
                                 <!-- OT -->
                                 <td class="px-4 py-3 font-semibold text-orange-600">
 
-                                    {{ number_format($overtime, 2) }}
+                                    {{ number_format($att->overtime_hours, 2) }}
 
                                 </td>
 
@@ -387,13 +371,25 @@
 
                                 </td>
 
+                                <td class="px-4 py-3">
+
+                                    <button
+                                        wire:click="editAttendance({{ $att->id }})"
+                                        class="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-xs font-medium hover:bg-blue-200">
+
+                                        Edit
+
+                                    </button>
+
+                                </td>
+
                             </tr>
 
                         @empty
 
                             <tr>
 
-                                <td colspan="6"
+                                <td colspan="7"
                                     class="text-center py-12 text-gray-500">
 
                                     No attendance records found
@@ -432,5 +428,140 @@
         @endif
 
     </div>
+    @if($showEditModal)
+
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-xl mx-4">
+
+                <div class="p-5 border-b">
+
+                    <h2 class="text-xl font-bold text-gray-800">
+                        Edit Attendance
+                    </h2>
+
+                </div>
+
+                <div class="p-5 space-y-4">
+
+                    <div>
+
+                        <label class="text-sm text-gray-500">
+                            Attendance Date
+                        </label>
+
+                        <input
+                            type="date"
+                            wire:model="editDate"
+                            class="w-full mt-1 border rounded-xl p-2">
+
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+
+                        <div>
+
+                            <label class="text-sm text-gray-500">
+                                Time In
+                            </label>
+
+                            <input
+                                type="time"
+                                wire:model="editTimeIn"
+                                class="w-full mt-1 border rounded-xl p-2">
+
+                        </div>
+
+                        <div>
+
+                            <label class="text-sm text-gray-500">
+                                Time Out
+                            </label>
+
+                            <input
+                                type="time"
+                                wire:model="editTimeOut"
+                                class="w-full mt-1 border rounded-xl p-2">
+
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <label class="text-sm text-gray-500">
+                            Status
+                        </label>
+
+                        <select
+                            wire:model="editStatus"
+                            class="w-full mt-1 border rounded-xl p-2">
+
+                            <option value="Present">Present</option>
+                            <option value="Late">Late</option>
+                            <option value="Half Day">Half Day</option>
+                            <option value="Absent">Absent</option>
+
+                            <option value="Vacation Leave">
+                                Vacation Leave
+                            </option>
+
+                            <option value="Sick Leave">
+                                Sick Leave
+                            </option>
+
+                            <option value="Regular Holiday">
+                                Regular Holiday
+                            </option>
+
+                            <option value="Special Non-Working Holiday">
+                                Special Non-Working Holiday
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div>
+
+                        <label class="text-sm text-gray-500">
+                            Remarks
+                        </label>
+
+                        <textarea
+                            rows="3"
+                            wire:model="editRemarks"
+                            class="w-full mt-1 border rounded-xl p-2">
+                        </textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="p-5 border-t flex justify-end gap-2">
+
+                    <button
+                        wire:click="$set('showEditModal', false)"
+                        class="px-4 py-2 border rounded-xl">
+
+                        Cancel
+
+                    </button>
+
+                    <button
+                        wire:click="saveAttendance"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-xl">
+
+                        Save Changes
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        @endif
 
 </div>

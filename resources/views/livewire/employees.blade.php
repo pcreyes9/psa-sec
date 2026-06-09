@@ -2,7 +2,6 @@
 
     <!-- Top Bar -->
     <div class="flex items-center justify-between flex-wrap md:flex-row p-4 bg-white gap-4">
-
         <div class="relative">
             <input type="text"
                    class="block p-2 ps-10 text-sm border border-gray-300 rounded-lg w-80 bg-gray-50"
@@ -12,7 +11,6 @@
                 🔍
             </div>
         </div>
-
     </div>
 
     <!-- TABLE -->

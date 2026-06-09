@@ -28,12 +28,19 @@ return new class extends Migration
             $table->decimal('overtime_hours', 5, 2)->default(0);
 
             $table->enum('status', [
+                'Pending',
                 'Present',
                 'Absent',
                 'Late',
                 'Half Day',
-                'On Leave'
-            ])->default('Present');
+                'Vacation Leave',
+                'Sick Leave',
+                'Regular Holiday',
+                'Special Non-Working Holiday',
+                
+            ])->default('Pending');
+
+            $table->string('remarks')->nullable();
 
             $table->timestamps();
 

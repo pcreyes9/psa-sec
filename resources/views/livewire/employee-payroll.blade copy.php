@@ -62,7 +62,9 @@
 
         <!-- FILTERS -->
         <div class="bg-white border rounded-2xl shadow-sm p-5">
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
                 <!-- MONTH -->
                 <div>
 
@@ -89,11 +91,11 @@
                         class="w-full mt-1 border rounded-xl p-3">
 
                         <option value="1">
-                            1st Cutoff (1-15)
+                            1st Cutoff
                         </option>
 
                         <option value="2">
-                            2nd Cutoff (16-End)
+                            2nd Cutoff
                         </option>
 
                     </select>
@@ -254,123 +256,6 @@
 
                         </div>
 
-                        <div class="bg-gray-50 border rounded-2xl p-5">
-
-                            <h3 class="text-lg font-bold text-gray-800 mb-5">
-                                Attendance Monitoring
-                            </h3>
-
-                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                                {{-- DAYS PRESENT --}}
-                                <div class="bg-white border rounded-xl p-4">
-
-                                    <div class="text-xs text-gray-500">
-                                        Days Present
-                                    </div>
-
-                                    <div class="text-2xl font-bold">
-                                        {{ $daysPresent }}
-                                    </div>
-
-                                </div>
-
-                                {{-- REGULAR HOURS --}}
-                                <div class="bg-white border rounded-xl p-4">
-
-                                    <div class="text-xs text-gray-500">
-                                        Regular Hours
-                                    </div>
-
-                                    <div class="text-2xl font-bold text-blue-600">
-
-                                        {{ number_format(
-                                            $regularHours +
-                                            $weekendHours +
-                                            $nonWorkingHolidayHours +
-                                            $regHolidayHours,
-                                            2
-                                        ) }}
-
-                                    </div>
-
-                                </div>
-
-                                {{-- PURE OT HOURS --}}
-                                <div class="bg-white border rounded-xl p-4">
-
-                                    <div class="text-xs text-gray-500">
-                                        OT Hours
-                                    </div>
-
-                                    <div class="text-2xl font-bold text-orange-600">
-
-                                        {{ number_format(
-                                            $weekdayOtHours +
-                                            $weekendOtHours +
-                                            $nonWorkingHolidayOtHours +
-                                            $regHolidayOtHours,
-                                            2
-                                        ) }}
-
-                                    </div>
-
-                                </div>
-
-                                {{-- OT + ND HOURS --}}
-                                <div class="bg-white border rounded-xl p-4">
-
-                                    <div class="text-xs text-gray-500">
-                                        OT + ND Hours
-                                    </div>
-
-                                    <div class="text-2xl font-bold text-purple-600">
-
-                                        {{ number_format(
-                                            $weekdayOtNdHours +
-                                            $weekendOtNdHours +
-                                            $nonWorkingHolidayOtNdHours +
-                                            $regHolidayOtNdHours,
-                                            2
-                                        ) }}
-
-                                    </div>
-
-                                </div>
-
-                                {{-- LATE --}}
-                                {{-- <div class="bg-white border rounded-xl p-4">
-
-                                    <div class="text-xs text-gray-500">
-                                        Late Minutes
-                                    </div>
-
-                                    <div class="text-2xl font-bold text-red-600">
-
-                                        {{ number_format($lateMinutes) }}
-
-                                    </div>
-
-                                </div> --}}
-
-                                {{-- PREMIUM PAY --}}
-                                <div class="bg-white border rounded-xl p-4">
-
-                                    <div class="text-xs text-gray-500">
-                                        Premium Earnings
-                                    </div>
-
-                                    <div class="text-2xl font-bold text-green-600">
-
-                                        ₱{{ number_format($overtimePay, 2) }}
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
                         <!-- ATTENDANCE SUMMARY -->
                         <div class="bg-gray-50 border rounded-2xl p-5">
 
@@ -391,19 +276,19 @@
                                             </th>
 
                                             <th class="p-3 text-center">
-                                                Regular (100%)
+                                                Regular
                                             </th>
 
                                             <th class="p-3 text-center">
-                                                Rest Day ({{ $settings['weekend_rate'] }}%)
+                                                Rest Day (130%)
                                             </th>
 
                                             <th class="p-3 text-center">
-                                                Special NW Holiday ({{ $settings['non_working_holiday_rate'] }}%)
+                                                Non-Working Holiday (130%)
                                             </th>
 
                                             <th class="p-3 text-center">
-                                                Regular Holiday ({{ $settings['reg_holiday_rate'] }}%)
+                                                Regular Holiday (200%)
                                             </th>
 
                                             <th class="p-3 text-center">
@@ -537,7 +422,7 @@
                         <div class="bg-gray-50 border rounded-2xl p-5">
 
                             <h3 class="text-lg font-bold text-gray-800 mb-5">
-                                Overtime Summary
+                                Overtime & Night Differential Summary
                             </h3>
 
                             <div class="overflow-x-auto">
@@ -553,19 +438,19 @@
                                             </th>
 
                                             <th class="p-3 text-center">
-                                                Weekday ({{ $settings['weekday_ot_rate'] }}% )
+                                                Weekday OT
                                             </th>
 
                                             <th class="p-3 text-center">
-                                                Rest Day ({{ $settings['weekend_ot_rate'] }}% )
+                                                Rest Day OT
                                             </th>
 
                                             <th class="p-3 text-center">
-                                                Special NW Holiday ({{ $settings['non_working_holiday_ot_rate'] }}% )
+                                                Special Holiday OT
                                             </th>
 
                                             <th class="p-3 text-center">
-                                                Regular Holiday ({{ $settings['reg_holiday_ot_rate'] }}% )
+                                                Regular Holiday OT
                                             </th>
 
                                             <th class="p-3 text-center">
@@ -577,11 +462,12 @@
                                     </thead>
 
                                     <tbody>
-                                        {{-- PURE OT HOURS --}}
+
+                                        {{-- OT HOURS --}}
                                         <tr class="border-t">
 
                                             <td class="p-3 font-medium">
-                                                Hours
+                                                OT Hours
                                             </td>
 
                                             <td class="p-3 text-center">
@@ -593,87 +479,178 @@
                                             </td>
 
                                             <td class="p-3 text-center">
-                                                {{ number_format($nonWorkingHolidayOtHours, 2) }}
+                                                {{ number_format($nonWorkingHolidayOT, 2) }}
                                             </td>
 
                                             <td class="p-3 text-center">
-                                                {{ number_format($regHolidayOtHours, 2) }}
+                                                {{ number_format($regHolidayOT, 2) }}
                                             </td>
 
                                             <td class="p-3 text-center font-semibold">
-
                                                 {{ number_format(
                                                     $weekdayOtHours +
                                                     $weekendOtHours +
-                                                    $nonWorkingHolidayOtHours +
-                                                    $regHolidayOtHours,
+                                                    $nonWorkingHolidayOT +
+                                                    $regHolidayOT,
                                                     2
                                                 ) }}
-
                                             </td>
 
                                         </tr>
 
-                                        {{-- PURE OT RATE --}}
+                                        {{-- OT RATE --}}
                                         <tr class="border-t bg-blue-50">
 
                                             <td class="p-3 font-medium">
-                                                Rate
+                                                OT Rate/Hour
                                             </td>
 
                                             <td class="p-3 text-center">
-                                                ₱{{ number_format($hourlyRate * ($settings['weekday_ot_rate'] / 100), 2) }}
+                                                {{ $settings['weekday_ot_rate'] }}% - {{ number_format($hourlyRate * ($settings['weekday_ot_rate'] / 100), 2) }}
                                             </td>
 
                                             <td class="p-3 text-center">
-                                                ₱{{ number_format($hourlyRate * ($settings['weekend_ot_rate'] / 100), 2) }}
+                                                {{ $settings['weekend_ot_rate'] }}% - {{ number_format($hourlyRate * ($settings['weekend_ot_rate'] / 100), 2) }}
 
                                             </td>
 
                                             <td class="p-3 text-center">
-                                                ₱{{ number_format($hourlyRate * ($settings['non_working_holiday_ot_rate'] / 100), 2) }}
+                                                {{ $settings['non_working_holiday_ot_rate'] }}% - {{ number_format($hourlyRate * ($settings['non_working_holiday_ot_rate'] / 100), 2) }}
                                             </td>
 
                                             <td class="p-3 text-center">
-                                                ₱{{ number_format($hourlyRate * ($settings['reg_holiday_ot_rate'] / 100), 2) }}
+                                               {{ $settings['reg_holiday_ot_rate'] }}% - {{ number_format($hourlyRate * ($settings['reg_holiday_ot_rate'] / 100), 2) }}
                                             </td>
 
                                             <td class="p-3 text-center font-semibold text-blue-700">
-                                                - 
+                                                ₱{{ number_format($weekdayOtPay + $weekendOtPay + $regHolidayOTPay + $nonWorkingHolidayOTPay, 2) }}
                                             </td>
 
                                         </tr>
 
-                                        {{-- PURE OT AMOUNT --}}
-                                        <tr class="border-t bg-blue-100">
+                                        <tr>
+                                            <td colspan="6" class="h-5 bg-white"></td>
+                                        </tr>
+
+                                        {{-- ND HOURS --}}
+                                        <tr class="border-t">
+
+                                            <td class="p-3 font-medium">
+                                                ND Hours
+                                            </td>
+
+                                            <td class="p-3 text-center">
+                                                {{ number_format($weekdayNdHours, 2) }}
+                                            </td>
+
+                                            <td class="p-3 text-center">
+                                                {{ number_format($weekendNdHours, 2) }}
+                                            </td>
+
+                                            <td class="p-3 text-center">
+                                                {{ number_format($specialHolidayNdHours, 2) }}
+                                            </td>
+
+                                            <td class="p-3 text-center">
+                                                {{ number_format($regHolidayNdHours, 2) }}
+                                            </td>
+
+                                            <td class="p-3 text-center">
+                                                {{ number_format(
+                                                    $weekdayNdHours +
+                                                    $weekendNdHours +
+                                                    $specialHolidayNdHours +
+                                                    $regHolidayNdHours,
+                                                    2
+                                                ) }}
+                                            </td>
+
+                                        </tr>
+
+                                        {{-- ND RATE --}}
+                                        <tr class="border-t bg-yellow-50">
+
+                                            <td class="p-3 font-medium">
+                                                ND Rate/Hour
+                                            </td>
+
+                                            <td class="p-3 text-center">
+                                                {{ $settings['weekday_nd_rate'] }}% - {{ number_format($hourlyRate * ($settings['weekday_nd_rate'] / 100), 2) }}
+                                            </td>
+
+                                            <td class="p-3 text-center">
+                                                {{ $settings['weekend_nd_rate'] }}% - {{ number_format($hourlyRate * ($settings['weekday_nd_rate'] / 100), 2) }}
+                                            </td>
+
+                                            <td class="p-3 text-center">
+                                                {{ $settings['special_holiday_nd_rate'] }}% - {{ number_format($hourlyRate * ($settings['weekday_nd_rate'] / 100), 2) }}
+                                            </td>
+
+                                            <td class="p-3 text-center">
+                                                {{ $settings['reg_holiday_nd_rate'] }}% - {{ number_format($hourlyRate * ($settings['weekday_nd_rate'] / 100), 2) }}
+                                            </td>
+
+                                            <td class="p-3 text-center font-semibold text-yellow-700">
+                                                ₱{{ number_format($weekdayNdPay + $weekendNdPay + $regHolidayNdPay + $specialHolidayNdPay, 2) }}
+                                            </td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="6" class="h-5 bg-white"></td>
+                                        </tr>
+
+                                        {{-- AMOUNT --}}
+                                        <tr class="border-t bg-green-50">
 
                                             <td class="p-3 font-medium">
                                                 Amount
                                             </td>
 
-                                            <td class="p-3 text-center font-semibold text-blue-700">
-                                                ₱{{ number_format($weekdayOtPay, 2) }}
-                                            </td>
-
-                                            <td class="p-3 text-center font-semibold text-blue-700">
-                                                ₱{{ number_format($weekendOtPay, 2) }}
-                                            </td>
-
-                                            <td class="p-3 text-center font-semibold text-blue-700">
-                                                ₱{{ number_format($nonWorkingHolidayOtPay, 2) }}
-                                            </td>
-
-                                            <td class="p-3 text-center font-semibold text-blue-700">
-                                                ₱{{ number_format($regHolidayOtPay, 2) }}
-                                            </td>
-
-                                            <td class="p-3 text-center font-bold text-blue-700">
+                                            <td class="p-3 text-center font-semibold text-green-700">
 
                                                 ₱{{ number_format(
                                                     $weekdayOtPay +
+                                                    $weekdayNdPay,
+                                                    2
+                                                ) }}
+
+                                            </td>
+
+                                            <td class="p-3 text-center font-semibold text-green-700">
+
+                                                ₱{{ number_format(
                                                     $weekendOtPay +
-                                                    $nonWorkingHolidayOtPay +
-                                                    $regHolidayOtPay,
+                                                    $weekendNdPay,
+                                                    2
+                                                ) }}
+
+                                            </td>
+
+                                            <td class="p-3 text-center font-semibold text-green-700">
+
+                                                ₱{{ number_format(
+                                                    $nonWorkingHolidayOTPay +
+                                                    $specialHolidayNdPay,
+                                                    2
+                                                ) }}
+
+                                            </td>
+
+                                            <td class="p-3 text-center font-semibold text-green-700">
+
+                                                ₱{{ number_format(
+                                                    $regHolidayOTPay +
+                                                    $regHolidayNdPay,
+                                                    2
+                                                ) }}
+
+                                            </td>
+
+                                            <td class="p-3 text-center font-bold text-green-700">
+
+                                                ₱{{ number_format(
+                                                    $overtimePay,
                                                     2
                                                 ) }}
 
@@ -689,176 +666,177 @@
 
                         </div>
 
+                        <!-- ALLOWANCES -->
                         <div class="bg-gray-50 border rounded-2xl p-5">
 
                             <h3 class="text-lg font-bold text-gray-800 mb-5">
-                                Overtime + Night Differential Summary
+                                Allowance Breakdown
                             </h3>
 
-                            <div class="overflow-x-auto">
+                            <div class="space-y-3">
 
-                                <table class="w-full text-sm border rounded-xl overflow-hidden">
+                                @forelse($selectedEmployee->allowances as $allowance)
+                                    <div class="flex items-center justify-between bg-white border rounded-2xl p-4">
 
-                                    <thead class="bg-gray-100">
+                                        <div>
 
-                                        <tr>
+                                            <div class="font-medium text-gray-800">
+                                                {{ $allowance->name }}
+                                            </div>
 
-                                            <th class="p-3 text-left">
-                                                Description
-                                            </th>
+                                            <div class="text-xs text-gray-500">
 
-                                            <th class="p-3 text-center">
-                                                Weekday ({{ $settings['weekday_nd_rate'] }}%)
-                                            </th>
+                                                Monthly:
+                                                ₱{{ number_format($allowance->amount, 2) }}
 
-                                            <th class="p-3 text-center">
-                                                Rest Day ({{ $settings['weekend_nd_rate'] }}%)
-                                            </th>
+                                            </div>
 
-                                            <th class="p-3 text-center">
-                                                Special NW Holiday ({{ $settings['special_holiday_nd_rate'] }}%)
-                                            </th>
+                                        </div>
 
-                                            <th class="p-3 text-center">
-                                                Regular Holiday ({{ $settings['reg_holiday_nd_rate'] }}%)
-                                            </th>
+                                        <div class="text-right">
 
-                                            <th class="p-3 text-center">
-                                                Total
-                                            </th>
+                                            <div class="text-xs text-gray-500">
+                                                Per Cutoff
+                                            </div>
 
-                                        </tr>
+                                            <div class="font-bold text-blue-600">
 
-                                    </thead>
+                                                ₱{{ number_format($allowance->amount / 2, 2) }}
 
-                                    <tbody>
-                                        {{-- OT + ND HOURS --}}
-                                        <tr class="border-t">
+                                            </div>
 
-                                            <td class="p-3 font-medium">
-                                                Hours
-                                            </td>
+                                        </div>
+                                            
+                                    </div>
 
-                                            <td class="p-3 text-center">
-                                                {{ number_format($weekdayOtNdHours, 2) }}
-                                            </td>
+                                @empty
 
-                                            <td class="p-3 text-center">
-                                                {{ number_format($weekendOtNdHours, 2) }}
-                                            </td>
+                                    <div class="text-sm text-gray-500">
+                                        No allowances found.
+                                    </div>
 
-                                            <td class="p-3 text-center">
-                                                {{ number_format($nonWorkingHolidayOtNdHours, 2) }}
-                                            </td>
+                                @endforelse
+                                <div class="border-t pt-4 flex justify-between items-center">
 
-                                            <td class="p-3 text-center">
-                                                {{ number_format($regHolidayOtNdHours, 2) }}
-                                            </td>
+                                    <span class="font-semibold text-gray-700">
+                                        Total Allowances
+                                    </span>
 
-                                            <td class="p-3 text-center font-semibold">
+                                    <span class="font-bold text-lg text-blue-600">
+                                        ₱{{ number_format($allowances, 2) }}
+                                    </span>
 
-                                                {{ number_format(
-                                                    $weekdayOtNdHours +
-                                                    $weekendOtNdHours +
-                                                    $nonWorkingHolidayOtNdHours +
-                                                    $regHolidayOtNdHours,
-                                                    2
-                                                ) }}
+                                </div>
 
-                                            </td>
+                            </div>
 
-                                        </tr>
+                        </div>
 
-                                        {{-- OT + ND RATE --}}
-                                        <tr class="border-t bg-yellow-50">
+                        <!-- DEDUCTIONS -->
+                        <div class="bg-gray-50 border rounded-2xl p-5">
 
-                                            <td class="p-3 font-medium">
-                                                Rate
-                                            </td>
+                            <h3 class="text-lg font-bold text-gray-800 mb-5">
+                                Deductions
+                            </h3>
 
-                                            <td class="p-3 text-center">
-                                                ₱{{ number_format($hourlyRate * ($settings['weekday_nd_rate'] / 100), 2) }}
-                                            </td>
+                            <div class="space-y-3">
 
-                                            <td class="p-3 text-center">
-                                                ₱{{ number_format($hourlyRate * ($settings['weekend_nd_rate'] / 100), 2) }}
-                                            </td>
+                                @if($cutoff == '1')
 
-                                            <td class="p-3 text-center">
-                                                ₱{{ number_format($hourlyRate * ($settings['special_holiday_nd_rate'] / 100), 2) }}
-                                            </td>
+                                    @foreach($deductionBreakdown as $deduction)
 
-                                            <td class="p-3 text-center">
-                                                ₱{{ number_format($hourlyRate * ($settings['reg_holiday_nd_rate'] / 100), 2) }}
-                                            </td>
+                                        @if($deduction['amount'] > 0)
 
-                                            <td class="p-3 text-center">
-                                                -
-                                            </td>
+                                            <div class="flex items-center justify-between bg-white border rounded-xl p-4">
 
-                                        </tr>
+                                                <div>
 
-                                        {{-- OT + ND AMOUNT --}}
-                                        <tr class="border-t bg-yellow-100">
+                                                    <div class="font-medium text-gray-800">
+                                                        {{ $deduction['name'] }}
+                                                    </div>
 
-                                            <td class="p-3 font-medium">
-                                                Amount
-                                            </td>
+                                                    <div class="text-xs text-gray-500">
+                                                        {{ $deduction['type'] }}
+                                                    </div>
 
-                                            <td class="p-3 text-center font-semibold text-yellow-700">
-                                                ₱{{ number_format($weekdayOtNdPay, 2) }}
-                                            </td>
+                                                </div>
+                                                
+                                                
+                                                <div class=" text-red-600">
+                                                    <div class="text-xs text-right text-gray-500">
+                                                        Per Cutoff
+                                                    </div>
 
-                                            <td class="p-3 text-center font-semibold text-yellow-700">
-                                                ₱{{ number_format($weekendOtNdPay, 2) }}
-                                            </td>
+                                                    ₱{{ number_format($deduction['amount'], 2) }}
+                                                </div>
 
-                                            <td class="p-3 text-center font-semibold text-yellow-700">
-                                                ₱{{ number_format($nonWorkingHolidayOtNdPay, 2) }}
-                                            </td>
+                                            </div>
 
-                                            <td class="p-3 text-center font-semibold text-yellow-700">
-                                                ₱{{ number_format($regHolidayOtNdPay, 2) }}
-                                            </td>
+                                        @endif
 
-                                            <td class="p-3 text-center font-bold text-yellow-700">
+                                    @endforeach
 
-                                                ₱{{ number_format(
-                                                    $weekdayOtNdPay +
-                                                    $weekendOtNdPay +
-                                                    $nonWorkingHolidayOtNdPay +
-                                                    $regHolidayOtNdPay,
-                                                    2
-                                                ) }}
+                                @endif
 
-                                            </td>
+                                @if($lateDeduction > 0)
 
-                                        </tr>
+                                    <div class="flex items-center justify-between bg-white border rounded-xl p-4">
 
-                                        <tr>
-                                            <td colspan="6" class="h-5 bg-white"></td>
-                                        </tr>
+                                        <div>
 
-                                        {{-- GRAND TOTAL --}}
-                                        <tr class="border-t bg-green-50">
+                                            <div class="font-medium text-gray-800">
+                                                Late Deduction
+                                            </div>
 
-                                            <td class="p-3 font-bold">
-                                                Total Amount
-                                            </td>
+                                            <div class="text-xs text-gray-500">
+                                                Attendance Penalty
+                                            </div>
 
-                                            <td colspan="4"></td>
+                                        </div>
 
-                                            <td class="p-3 text-center font-bold text-green-700 text-lg">
+                                        <div class="font-bold text-red-600">
+                                            ₱{{ number_format($lateDeduction, 2) }}
+                                        </div>
 
-                                                ₱{{ number_format($overtimePay, 2) }}
+                                    </div>
 
-                                            </td>
+                                @endif
 
-                                        </tr>
+                                @if($taxDeduction > 0)
 
-                                    </tbody>
+                                    <div class="flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-xl p-4">
 
-                                </table>
+                                        <div>
+
+                                            <div class="font-medium text-yellow-800">
+                                                Withholding Tax
+                                            </div>
+
+                                            <div class="text-xs text-yellow-600">
+                                                Computed Tax
+                                            </div>
+
+                                        </div>
+
+                                        <div class="font-bold text-red-600">
+                                            ₱{{ number_format($taxDeduction, 2) }}
+                                        </div>
+
+                                    </div>
+
+                                @endif
+
+                                <div class="border-t pt-4 flex justify-between items-center">
+
+                                    <span class="font-semibold text-gray-700">
+                                        Total Deductions
+                                    </span>
+
+                                    <span class="font-bold text-lg text-red-600">
+                                        ₱{{ number_format($deductions, 2) }}
+                                    </span>
+
+                                </div>
 
                             </div>
 
@@ -979,15 +957,15 @@
                                                         @case('Regular Holiday')
 
                                                             <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
-                                                                Regular Holiday ({{ $settings['reg_holiday_rate'] }}%)
+                                                                Regular Holiday (200%)
                                                             </span>
 
                                                             @break
 
-                                                        @case('Special Non-Working Holiday')
+                                                        @case('Non Working Holiday')
 
                                                             <span class="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-700">
-                                                                Special Non-Working Holiday ({{ $settings['non_working_holiday_rate'] }}%)
+                                                                Non Working Holiday (130%)
                                                             </span>
 
                                                             @break
@@ -1080,25 +1058,25 @@
                                                             @if($att->status == 'Regular Holiday')
 
                                                                 <span class="text-blue-600">
-                                                                    Regular Holiday ({{ $settings['reg_holiday_ot_rate'] }}%)
+                                                                    Regular Holiday (230%)
                                                                 </span>
 
-                                                            @elseif($att->status == 'Special Non-Working Holiday')
+                                                            @elseif($att->status == 'Non Working Holiday')
 
                                                                 <span class="text-purple-600">
-                                                                    Special Non-Working Holiday ({{ $settings['non_working_holiday_rate'] }}%)
+                                                                    Non Working Holiday (160%)
                                                                 </span>
 
                                                             @elseif($isWeekend)
 
                                                                 <span class="text-red-500">
-                                                                    Weekend OT ({{ $settings['weekend_ot_rate'] }}%)
+                                                                    Weekend OT (130%)
                                                                 </span>
 
                                                             @else
 
                                                                 <span class="text-green-500">
-                                                                    Weekday OT ({{ $settings['weekday_ot_rate'] }}%)
+                                                                    Weekday OT (125%)
                                                                 </span>
 
                                                             @endif
@@ -1117,187 +1095,80 @@
                                     </tbody>
                                 </table>
                             </div>
+                            
+                            <!-- SUMMARY -->
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-5">
 
-                        </div>
+                                <!-- BASIC -->
+                                <div class="bg-gray-50 border rounded-2xl p-4">
 
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <div class="text-xs uppercase text-gray-500">
+                                        Overtime
+                                    </div>
 
-                            <!-- ALLOWANCES -->
-                            <div class="bg-gray-50 border rounded-2xl p-5">
+                                    <div class="mt-2 text-xl font-bold">
+                                        ₱{{ number_format($basicPay, 2) }}
+                                    </div>
 
-                                <h3 class="text-lg font-bold text-gray-800 mb-5">
-                                    Allowance Breakdown
-                                </h3>
+                                </div>
 
-                                <div class="space-y-3">
+                                <!-- ALLOWANCES -->
+                                <div class="bg-gray-50 border rounded-2xl p-4">
 
-                                    @forelse($selectedEmployee->allowances as $allowance)
+                                    <div class="text-xs uppercase text-gray-500">
+                                        Holiday
+                                    </div>
 
-                                        <div class="flex items-center justify-between bg-white border rounded-xl p-3">
+                                    <div class="mt-2 text-xl font-bold text-blue-600">
+                                        ₱{{ number_format($allowances, 2) }}
+                                    </div>
 
-                                            <div>
-                                                <div class="font-medium text-gray-800">
-                                                    {{ $allowance->name }}
-                                                </div>
+                                </div>
 
-                                                <div class="text-xs text-gray-500">
-                                                    Monthly:
-                                                    ₱{{ number_format($allowance->amount, 2) }}
-                                                </div>
-                                            </div>
+                                <!-- DEDUCTIONS -->
+                                <div class="bg-gray-50 border rounded-2xl p-4">
 
-                                            <div class="text-right">
+                                    <div class="text-xs uppercase text-gray-500">
+                                        Deductions
+                                    </div>
 
-                                                <div class="text-xs text-gray-500">
-                                                    Per Cutoff
-                                                </div>
+                                    <div class="mt-2 text-xl font-bold text-orange-600">
+                                        ₱{{ number_format($deductions, 2) }}
+                                    </div>
 
-                                                <div class="font-bold text-blue-600">
-                                                    ₱{{ number_format($allowance->amount / 2, 2) }}
-                                                </div>
+                                </div>
 
-                                            </div>
+                                <!-- NET -->
+                                <div class="bg-gray-50 border rounded-2xl p-4">
 
-                                        </div>
+                                    <div class="text-xs uppercase text-gray-500">
+                                        Gross Pay
+                                    </div>
 
-                                    @empty
+                                    <div class="mt-2 text-xl font-bold text-black-600">
+                                        ₱{{ number_format($grossPay, 2) }}
+                                    </div>
 
-                                        <div class="text-sm text-gray-500">
-                                            No allowances found.
-                                        </div>
+                                </div>
 
-                                    @endforelse
+                                {{-- TOTAL --}}
+                                <div class="bg-gray-50 border rounded-2xl p-4">
 
-                                    <div class="border-t pt-4 flex justify-between items-center">
+                                    <div class="text-xs uppercase text-gray-500">
+                                        Net Pay
+                                    </div>
 
-                                        <span class="font-semibold text-gray-700">
-                                            Total Allowances
-                                        </span>
-
-                                        <span class="font-bold text-lg text-blue-600">
-                                            ₱{{ number_format($allowances, 2) }}
-                                        </span>
-
+                                    <div class="mt-2 text-2xl font-bold text-green-600">
+                                        ₱{{ number_format($netPay, 2) }}
                                     </div>
 
                                 </div>
 
                             </div>
-
-                            <!-- DEDUCTIONS -->
-                            <div class="bg-gray-50 border rounded-2xl p-5">
-
-                                <h3 class="text-lg font-bold text-gray-800 mb-5">
-                                    Deductions
-                                </h3>
-
-                                <div class="space-y-3">
-
-                                    @if($cutoff == '1')
-
-                                        @foreach($deductionBreakdown as $deduction)
-
-                                            @if($deduction['amount'] > 0)
-
-                                                <div class="flex items-center justify-between bg-white border rounded-xl p-3">
-
-                                                    <div>
-
-                                                        <div class="font-medium text-gray-800">
-                                                            {{ $deduction['name'] }}
-                                                        </div>
-
-                                                        <div class="text-xs text-gray-500">
-                                                            {{ $deduction['type'] }}
-                                                        </div>
-
-                                                    </div>
-
-                                                    <div class="text-right">
-
-                                                        <div class="text-xs text-gray-500">
-                                                            Per Cutoff
-                                                        </div>
-
-                                                        <div class="font-bold text-red-600">
-                                                            ₱{{ number_format($deduction['amount'], 2) }}
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-
-                                            @endif
-
-                                        @endforeach
-
-                                    @endif
-
-                                    @if($lateDeduction > 0)
-
-                                        <div class="flex items-center justify-between bg-white border rounded-xl p-3">
-
-                                            <div>
-
-                                                <div class="font-medium text-gray-800">
-                                                    Late Deduction
-                                                </div>
-
-                                                <div class="text-xs text-gray-500">
-                                                    Attendance Penalty
-                                                </div>
-
-                                            </div>
-
-                                            <div class="font-bold text-red-600">
-                                                ₱{{ number_format($lateDeduction, 2) }}
-                                            </div>
-
-                                        </div>
-
-                                    @endif
-
-                                    @if($taxDeduction > 0)
-
-                                        <div class="flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-xl p-3">
-
-                                            <div>
-
-                                                <div class="font-medium text-yellow-800">
-                                                    Withholding Tax
-                                                </div>
-
-                                                <div class="text-xs text-yellow-600">
-                                                    Computed Tax
-                                                </div>
-
-                                            </div>
-
-                                            <div class="font-bold text-red-600">
-                                                ₱{{ number_format($taxDeduction, 2) }}
-                                            </div>
-
-                                        </div>
-
-                                    @endif
-
-                                    <div class="border-t pt-4 flex justify-between items-center">
-
-                                        <span class="font-semibold text-gray-700">
-                                            Total Deductions
-                                        </span>
-
-                                        <span class="font-bold text-lg text-red-600">
-                                            ₱{{ number_format($deductions, 2) }}
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
+                            
                         </div>
+
+                        
 
                         <!-- APPROVE -->
                         <div class="flex justify-end">
