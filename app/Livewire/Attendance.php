@@ -6,13 +6,17 @@ use Livewire\Component;
 use Carbon\Carbon;
 use App\Models\Employee;
 use App\Models\Attendance as AttendanceModel;
+<<<<<<< HEAD
 use App\Models\Setting;
+=======
+>>>>>>> adea58223f25f520a9bee1d2707be305a36c330a
 
 class Attendance extends Component
 {
     public $employees = [];
     public $selectedEmployee = '';
 
+<<<<<<< HEAD
     public $canTimeIn = false;
     public $canTimeOut = false;
     public $settings;
@@ -23,6 +27,10 @@ class Attendance extends Component
             'value',
             'key'
         )->toArray();
+=======
+    public function mount()
+    {
+>>>>>>> adea58223f25f520a9bee1d2707be305a36c330a
         $this->employees = Employee::orderBy('employee_code')->get();
     }
 
@@ -95,6 +103,15 @@ class Attendance extends Component
 
         $adjustedTimeIn = $timeIn->copy();
 
+<<<<<<< HEAD
+=======
+        // Example:
+        // Official = 8:00 AM
+        // Grace    = 8:15 AM
+        // Actual   = 8:13 AM
+        // Payroll treats as 8:00 AM
+
+>>>>>>> adea58223f25f520a9bee1d2707be305a36c330a
         if (
             $timeIn->greaterThanOrEqualTo($officialTimeIn) &&
             $timeIn->lessThanOrEqualTo($graceTime)
@@ -149,6 +166,7 @@ class Attendance extends Component
             ->get();
     }
 
+<<<<<<< HEAD
     public function generateTodayAttendance()
     {
         Employee::where('status', 'Active')
@@ -192,6 +210,10 @@ class Attendance extends Component
         ->whereNull('time_out')
         ->exists();
 
+=======
+    public function render()
+    {
+>>>>>>> adea58223f25f520a9bee1d2707be305a36c330a
         return view(
             'livewire.attendance'
         );

@@ -5,8 +5,11 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::middleware('guest')->group(function () {
+<<<<<<< HEAD
     Route::view('/', 'attendance');
     
+=======
+>>>>>>> adea58223f25f520a9bee1d2707be305a36c330a
     Volt::route('login', 'pages.auth.login')
         ->name('login');
 
@@ -20,8 +23,13 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+<<<<<<< HEAD
     // Volt::route('register', 'pages.auth.register')
     //     ->name('register');
+=======
+    Volt::route('register', 'pages.auth.register')
+        ->name('register');
+>>>>>>> adea58223f25f520a9bee1d2707be305a36c330a
 
     Volt::route('verify-email', 'pages.auth.verify-email')
         ->name('verification.notice');

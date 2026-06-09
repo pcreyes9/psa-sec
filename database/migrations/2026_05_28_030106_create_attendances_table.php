@@ -33,6 +33,7 @@ return new class extends Migration
                 'Absent',
                 'Late',
                 'Half Day',
+<<<<<<< HEAD
                 'Vacation Leave',
                 'Sick Leave',
                 'Regular Holiday',
@@ -41,6 +42,13 @@ return new class extends Migration
             ])->default('Pending');
 
             $table->string('remarks')->nullable();
+=======
+                'On Leave',
+                'Regular Holiday',
+                'Special Non-Working Holiday',
+                
+            ])->default('Present');
+>>>>>>> adea58223f25f520a9bee1d2707be305a36c330a
 
             $table->timestamps();
 
