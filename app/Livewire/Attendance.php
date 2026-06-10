@@ -16,6 +16,7 @@ class Attendance extends Component
     public $canTimeIn = false;
     public $canTimeOut = false;
     public $settings;
+
     public function mount()
     {
         $this->generateTodayAttendance();
@@ -23,6 +24,7 @@ class Attendance extends Component
             'value',
             'key'
         )->toArray();
+
         $this->employees = Employee::orderBy('employee_code')->get();
     }
 
@@ -95,15 +97,12 @@ class Attendance extends Component
 
         $adjustedTimeIn = $timeIn->copy();
 
-<<<<<<< HEAD
-=======
         // Example:
         // Official = 8:00 AM
         // Grace    = 8:15 AM
         // Actual   = 8:13 AM
         // Payroll treats as 8:00 AM
 
->>>>>>> adea58223f25f520a9bee1d2707be305a36c330a
         if (
             $timeIn->greaterThanOrEqualTo($officialTimeIn) &&
             $timeIn->lessThanOrEqualTo($graceTime)
@@ -201,8 +200,6 @@ class Attendance extends Component
         ->whereNull('time_out')
         ->exists();
 
-        return view(
-            'livewire.attendance'
-        );
+        return view('livewire.attendance');
     }
 }

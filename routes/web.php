@@ -2,11 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-<<<<<<< HEAD
 Route::view('/', 'attendance');
-=======
-Route::view('/', 'employees');
->>>>>>> adea58223f25f520a9bee1d2707be305a36c330a
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

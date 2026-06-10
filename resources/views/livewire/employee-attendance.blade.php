@@ -163,6 +163,8 @@
                             <option value="Present">Present</option>
                             <option value="Late">Late</option>
                             <option value="Absent">Absent</option>
+                            <option value="Haly Day - VL">Haly Day - VL</option>
+                            <option value="Haly Day - SL">Haly Day - SL</option>
                             <option value="Vacation Leave">Vacation Leave</option>
                             <option value="Sick Leave">Sick Leave</option>
                             <option value="Regular Holiday">Regular Holiday</option>
@@ -215,7 +217,7 @@
             @endphp
 
             <!-- SUMMARY CARDS -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border-b bg-gray-50">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border-b bg-gray-50">
 
                 <!-- TOTAL HOURS -->
                 <div class="bg-white border border-blue-100 rounded-2xl p-5 shadow-sm">
@@ -244,7 +246,7 @@
                 </div>
 
                 <!-- DAYS PRESENT -->
-                <div class="bg-white border border-green-100 rounded-2xl p-5 shadow-sm">
+                {{-- <div class="bg-white border border-green-100 rounded-2xl p-5 shadow-sm">
 
                     <div class="text-xs uppercase tracking-wide text-green-500">
                         Days Present
@@ -254,7 +256,7 @@
                         {{ $totalDaysPresent }}
                     </div>
 
-                </div>
+                </div> --}}
 
             </div>
 
@@ -501,6 +503,9 @@
                             <option value="Late">Late</option>
                             <option value="Half Day">Half Day</option>
                             <option value="Absent">Absent</option>
+
+                            <option value="Half Day - VL">Half Day - VL</option>
+                            <option value="Half Day - SL">Half Day - SL</option>
 
                             <option value="Vacation Leave">
                                 Vacation Leave

@@ -16,40 +16,44 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('payroll_id')
+                ->nullable()
                 ->constrained()
-                ->cascadeOnDelete();
+                ->nullOnDelete();
 
             $table->foreignId('employee_id')
                 ->constrained()
                 ->cascadeOnDelete();
 
-            // Attendance Summary
-            $table->integer('days_present')->default(0);
+            $table->string('payroll_code');
 
-            $table->decimal('regular_hours', 8, 2)->default(0);
-            $table->decimal('overtime_hours', 8, 2)->default(0);
+            $table->string('month');
+            $table->tinyInteger('cutoff');
 
-            // Salary
-            $table->decimal('daily_rate', 10, 2)->default(0);
-            $table->decimal('hourly_rate', 10, 2)->default(0);
+            // $table->integer('days_present')->default(0);
+
+            // $table->decimal('regular_hours', 8, 2)->default(0);
+            // $table->decimal('overtime_hours', 8, 2)->default(0);
+
+            $table->decimal('daily_rate', 12, 2)->default(0);
+            $table->decimal('hourly_rate', 12, 2)->default(0);
 
             $table->decimal('basic_pay', 12, 2)->default(0);
             $table->decimal('overtime_pay', 12, 2)->default(0);
 
-            // Allowances
             $table->decimal('allowances', 12, 2)->default(0);
 
-            // Deductions
             $table->decimal('late_deduction', 12, 2)->default(0);
+            $table->decimal('other_deductions', 12, 2)->default(0);
+            $table->decimal('tax_deduction', 12, 2)->default(0);
 
-            $table->decimal('sss', 12, 2)->default(0);
-            $table->decimal('philhealth', 12, 2)->default(0);
-            $table->decimal('pagibig', 12, 2)->default(0);
-            $table->decimal('tax', 12, 2)->default(0);
-
-            // Final
             $table->decimal('gross_pay', 12, 2)->default(0);
             $table->decimal('net_pay', 12, 2)->default(0);
+
+            $table->enum('status', [
+                'Draft',
+                'Finalized',
+                'Paid'
+            ])->default('Draft');
 
             $table->timestamps();
         });

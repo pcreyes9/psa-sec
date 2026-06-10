@@ -752,10 +752,10 @@
 
                                 <div class="mt-4 border-t pt-3">
                                     <div class="text-xs uppercase text-gray-500 mb-2">
-                                        Used Leave Dates ({{ count($vacationLeaves) }})
+                                        Used Leave Dates
                                     </div>
 
-                                    @forelse($vacationLeaves as $date)
+                                    @forelse($vacationLeaveDates as $date)
                                         <div class="flex justify-between py-1">
                                             <span class="text-sm text-gray-700">
                                                 {{ \Carbon\Carbon::parse($date)->format('M d, Y - D') }}
@@ -791,10 +791,10 @@
 
                                 <div class="mt-4 border-t pt-3">
                                     <div class="text-xs uppercase text-gray-500 mb-2">
-                                        Used Leave Dates ({{ count($sickLeaves) }})
+                                        Used Leave Dates 
                                     </div>
 
-                                    @forelse($sickLeaves as $date)
+                                    @forelse($sickLeaveDates as $date)
                                         <div class="flex justify-between py-1">
                                             <span class="text-sm text-gray-700">
                                                 {{ \Carbon\Carbon::parse($date)->format('M d, Y - D') }}
