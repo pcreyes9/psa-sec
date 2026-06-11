@@ -36,7 +36,7 @@ class EmployeeAttendance extends Component
 
     public function mount()
 {
-    $this->employees = Employee::orderBy('name')->get();
+    $this->employees = Employee::where('status', 'Active')->orderBy('id')->get();
 
     $this->month = now()->format('Y-m');
 

@@ -92,7 +92,8 @@ class EmployeePayroll extends Component
                 'allowances',
                 'deductions'
             ])
-            ->orderBy('name')
+            ->where('status', 'Active')
+            ->orderBy('id')
             ->get();
 
         $this->month = now()->format('Y-m');
@@ -592,6 +593,8 @@ class EmployeePayroll extends Component
             $this->otherDeductions,
             2
         );
+        
+        // dd($this->deductions);
 
         $this->grossPay = round(
             $this->basicPay +
@@ -678,7 +681,7 @@ class EmployeePayroll extends Component
 
             return;
         }
-
+        // dd($this->deductions - $this->taxDeduction);
         $payrollItem = PayrollItem::create([
 
             'payroll_id' => null,
@@ -720,7 +723,7 @@ class EmployeePayroll extends Component
                 $this->lateDeduction,
 
             'other_deductions' =>
-                $this->otherDeductions,
+                $this->deductions - $this->taxDeduction,
 
             'tax_deduction' =>
                 $this->taxDeduction,

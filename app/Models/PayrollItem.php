@@ -27,7 +27,7 @@ class PayrollItem extends Model
         'allowances',
 
         'late_deduction',
-        'other_deduction',
+        'other_deductions',
         'tax_deduction',
 
         'gross_pay',

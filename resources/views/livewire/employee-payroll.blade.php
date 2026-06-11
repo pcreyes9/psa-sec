@@ -1,5 +1,5 @@
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-    <x-flash-message />
+    <x-flash-message/>
     <!-- LEFT SIDE -->
     <div class="bg-white border rounded-2xl shadow-sm h-[77vh] overflow-hidden">
 
