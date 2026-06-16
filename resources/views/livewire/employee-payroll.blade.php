@@ -103,13 +103,28 @@
                 <!-- FINALIZE -->
                 <div class="flex items-end">
 
-                    <button
-                        wire:click="createPayrollItem"
-                        class="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl p-3 font-medium">
+                    @if($payrollItem)
 
-                        Create Employee Payroll
+                        <a
+                            href="{{ route('payslip.show', $payrollItem->id) }}"
+                            target="_blank"
+                            class="w-full text-center bg-blue-600 hover:bg-blue-700 text-white rounded-xl p-3 font-medium">
 
-                    </button>
+                            Print Payslip
+
+                        </a>
+
+                    @else
+
+                        <button
+                            wire:click="createPayrollItem"
+                            class="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl p-3 font-medium">
+
+                            Create Employee Payroll
+
+                        </button>
+
+                    @endif
 
                 </div>
 

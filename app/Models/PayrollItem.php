@@ -48,17 +48,19 @@ class PayrollItem extends Model
         );
     }
     
-    public function allowances()
+    public function allowanceItems()
     {
         return $this->hasMany(
-            PayrollItemAllowance::class
+            PayrollItemAllowance::class,
+            'payroll_item_id'
         );
     }
 
-    public function deductions()
+    public function deductionItems()
     {
         return $this->hasMany(
-            PayrollItemDeduction::class
+            PayrollItemDeduction::class,
+            'payroll_item_id'
         );
     }
 }

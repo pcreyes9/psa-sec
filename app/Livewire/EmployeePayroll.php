@@ -83,6 +83,8 @@ class EmployeePayroll extends Component
     public $nonWorkingHolidayOtNdPay = 0;
     public $regHolidayOtNdPay = 0;
 
+    public $payrollItem = null;
+
     // TOTAL PREMIUMS
     public $overtimePay = 0;
 
@@ -113,6 +115,16 @@ class EmployeePayroll extends Component
             ->findOrFail($id);
 
         $this->computePayroll();
+        
+        $this->payrollItem = PayrollItem::where(
+            'employee_id',
+            $this->selectedEmployee->id
+        )
+        ->where(
+            'payroll_code',
+            $this->month . '-C' . $this->cutoff
+        )
+        ->first();
     }
 
     public function updated($property)

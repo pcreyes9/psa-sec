@@ -5,6 +5,10 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Payroll;
 use App\Models\PayrollItem;
+use App\Exports\PayrollExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
+
 
 class PayrollGenerator extends Component
 {
@@ -12,6 +16,9 @@ class PayrollGenerator extends Component
     public $cutoff = 1;
 
     public $payrollItems = [];
+
+    public $payrollExists = false;
+
 
     public function mount()
     {
@@ -37,16 +44,17 @@ class PayrollGenerator extends Component
         $payrollCode =
             $this->month . '-C' . $this->cutoff;
 
+        $this->payrollExists = Payroll::where(
+            'payroll_code',
+            $payrollCode
+        )->exists();
+
         $this->payrollItems = PayrollItem::with(
                 'employee'
             )
             ->where(
                 'payroll_code',
                 $payrollCode
-            )
-            ->where(
-                'status',
-                'Draft'
             )
             ->get();
     }
@@ -71,6 +79,36 @@ class PayrollGenerator extends Component
             return;
         }
 
+        [$year, $month] = explode('-', $this->month);
+
+        if ($this->cutoff == 1) {
+
+            $dateFrom = Carbon::create(
+                $year,
+                $month,
+                1
+            );
+
+            $dateTo = Carbon::create(
+                $year,
+                $month,
+                15
+            );
+
+        } else {
+
+            $dateFrom = Carbon::create(
+                $year,
+                $month,
+                16
+            );
+
+            $dateTo = Carbon::create(
+                $year,
+                $month
+            )->endOfMonth();
+
+        }
         $payroll = Payroll::create([
 
             'payroll_code' => $payrollCode,
@@ -79,13 +117,17 @@ class PayrollGenerator extends Component
 
             'cutoff' => $this->cutoff,
 
+            'date_from' => $dateFrom,
+
+            'date_to' => $dateTo,
+
             'total_amount' =>
                 PayrollItem::where(
                     'payroll_code',
                     $payrollCode
                 )->sum('net_pay'),
 
-            'status' => 'Finalized',
+            'status' => 'Processed',
         ]);
 
         PayrollItem::where(
@@ -93,11 +135,9 @@ class PayrollGenerator extends Component
             $payrollCode
         )->update([
 
-            'payroll_id' =>
-                $payroll->id,
+            'payroll_id' => $payroll->id,
 
-            'status' =>
-                'Finalized',
+            'status' => 'Finalized',
 
         ]);
 
@@ -106,6 +146,32 @@ class PayrollGenerator extends Component
         session()->flash(
             'success',
             'Payroll generated successfully.'
+        );
+    }
+
+    public function exportPayroll()
+    {
+        $payrollCode =
+            $this->month . '-C' . $this->cutoff;
+
+        $items = PayrollItem::with([
+                'employee',
+                'allowances',
+                'deductions'
+            ])
+            ->where(
+                'payroll_code',
+                $payrollCode
+            )
+            ->get();
+
+        return Excel::download(
+            new PayrollExport(
+                $items,
+                $this->month,
+                $this->cutoff
+            ),
+            "Payroll-{$payrollCode}.xlsx"
         );
     }
 

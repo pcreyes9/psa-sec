@@ -10,13 +10,32 @@
                 Payroll Generator
             </h2>
 
-            <button
-                wire:click="generatePayroll"
-                class="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-2xl">
+            <div class="flex gap-2">
 
-                Generate Payroll
+                <button
+                    wire:click="generatePayroll"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl">
 
-            </button>
+                    Generate Payroll
+
+                </button>
+
+                @if($payrollExists)
+
+                    <a
+                        href="{{ route('payroll.export', [
+                            'month' => $month,
+                            'cutoff' => $cutoff
+                        ]) }}"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl">
+
+                        Export Excel
+
+                    </a>
+
+                @endif
+
+            </div>
 
         </div>
 
