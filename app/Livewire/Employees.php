@@ -22,6 +22,8 @@ class Employees extends Component
 
     public $isEditing = false;
 
+    public $isCreating = false;
+
     public $vacationLeaveDates = [], $sickLeaveDates = [], $vacationLeaves = 0, $sickLeaves = 0, $availVL = 0, $availSL = 0;
 
     public function mount()
@@ -33,6 +35,148 @@ class Employees extends Component
     public function render()
     {
         return view('livewire.employees');
+    }
+
+    public function createEmployee()
+    {
+        $this->reset([
+
+            'name',
+            'email',
+            'phone_number',
+            'position',
+            'department',
+            'monthly_salary',
+            'status',
+            'sss_no',
+            'pagibig_no',
+            'philhealth_no',
+            'tin_no',
+
+        ]);
+
+        $this->employee_modal = null;
+
+        $this->allowances = [];
+
+        $this->deductions = [];
+
+        $this->isEditing = true;
+
+        $this->isCreating = true;
+    }
+
+    public function saveEmployee()
+    {
+        $this->validate([
+
+            'name' => 'required',
+
+            'email' => 'required|email|unique:employees,email',
+
+            'phone_number' => 'required',
+
+            'position' => 'required',
+
+            'department' => 'required',
+
+            'monthly_salary' => 'required|numeric',
+
+            'status' => 'required',
+
+            'sss_no' => 'required',
+
+            'pagibig_no' => 'required',
+
+            'philhealth_no' => 'required',
+
+            'tin_no' => 'required',
+
+        ]);
+
+        $employee = Employee::create([
+
+            'name' => $this->name,
+
+            'email' => $this->email,
+
+            'phone_number' => $this->phone_number,
+
+            'position' => $this->position,
+
+            'department' => $this->department,
+
+            'monthly_salary' => $this->monthly_salary,
+
+            'status' => $this->status,
+
+            'sss_no' => $this->sss_no,
+
+            'pagibig_no' => $this->pagibig_no,
+
+            'philhealth_no' => $this->philhealth_no,
+
+            'tin_no' => $this->tin_no,
+
+        ]);
+
+        foreach ($this->allowances as $allowance) {
+
+            if (
+                empty($allowance['name']) ||
+                $allowance['amount'] <= 0
+            ) {
+                continue;
+            }
+
+            $employee
+                ->allowances()
+                ->create([
+
+                    'name' => $allowance['name'],
+
+                    'amount' => $allowance['amount'],
+
+                ]);
+        }
+
+        foreach ($this->deductions as $deduction) {
+
+            if (
+                empty($deduction['name']) ||
+                $deduction['amount'] <= 0
+            ) {
+                continue;
+            }
+
+            $employee
+                ->deductions()
+                ->create([
+
+                    'name' => $deduction['name'],
+
+                    'type' => $deduction['type'],
+
+                    'amount' => $deduction['amount'],
+
+                    'is_active' => 1,
+
+                ]);
+        }
+
+        $employee->recomputeDeductions();
+
+        $this->employees =
+            Employee::latest()->get();
+
+        session()->flash(
+            'success',
+            'Employee created successfully.'
+        );
+
+        $this->isEditing = false;
+
+        $this->isCreating = false;
     }
 
     public function editEmployee()

@@ -1,16 +1,84 @@
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-200">
 
     <!-- Top Bar -->
-    <div class="flex items-center justify-between flex-wrap md:flex-row p-4 bg-white gap-4">
-        <div class="relative">
-            <input type="text"
-                   class="block p-2 ps-10 text-sm border border-gray-300 rounded-lg w-80 bg-gray-50"
-                   placeholder="Search employees...">
+    <div class="space-y-6">
 
-            <div class="absolute inset-y-0 left-0 flex items-center ps-3">
-                🔍
+        <!-- PAGE HEADER -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+            <div>
+
+                <h1 class="text-3xl font-bold text-gray-900">
+                    Employees
+                </h1>
+
+                <p class="text-gray-500 mt-1">
+                    Manage employee information, salaries, allowances, deductions and leave credits.
+                </p>
+
             </div>
+
+            <button
+                wire:click="createEmployee"
+                data-modal-target="crud-modal"
+                data-modal-toggle="crud-modal"
+                class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl shadow">
+
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor">
+
+                    <path stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 4v16m8-8H4"/>
+
+                </svg>
+
+                Add Employee
+
+            </button>
+
         </div>
+
+        <!-- SEARCH CARD -->
+        <div class="bg-white rounded-2xl shadow border border-gray-200 p-5">
+
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+
+                <div class="relative w-full lg:w-96">
+
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+
+                        🔍
+
+                    </div>
+
+                    <input
+                        type="text"
+                        placeholder="Search employee..."
+                        class="w-full rounded-xl border-gray-300 pl-11 pr-4 py-3 focus:ring-blue-500 focus:border-blue-500">
+
+                </div>
+
+                <div class="text-sm text-gray-500">
+
+                    Total Employees
+
+                    <span class="font-bold text-gray-800">
+
+                        {{ count($employees) }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
     <!-- TABLE -->
