@@ -26,5 +26,28 @@ class SettingsSeeder extends Seeder
         Setting::set('night_diff_rate', '0.10');
 
         Setting::set('working_hours_per_day', '10');
+
+        Setting::set('vacation_leaves', '15');
+        Setting::set('sick_leaves', '15');
+
+        Setting::set('reg_holiday_rate', '200');
+        Setting::set('non_working_holiday_rate', '130');
+
+        Setting::set('weekend_rate', '130');
+        Setting::set('reg_holiday_ot_rate', '260');
+
+        Setting::set('non_working_holiday_ot_rate', '169');
+
+        Setting::set('weekday_nd_rate', '137.5');
+        Setting::set('weekend_nd_rate', '185.9');
+
+        Setting::set('special_holiday_nd_rate', '185.9');
+        Setting::set('special_restday_nd_rate', '214.5');
+
+        Setting::set('reg_holiday_nd_rate', '286');
+        Setting::set('reg_holiday_restday_nd_rate', '371.8');
+        
+
+        
     }
 }
