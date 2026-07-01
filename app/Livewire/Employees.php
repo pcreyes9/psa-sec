@@ -39,6 +39,7 @@ class Employees extends Component
 
     public function createEmployee()
     {
+        
         $this->reset([
 
             'name',
@@ -68,6 +69,7 @@ class Employees extends Component
 
     public function saveEmployee()
     {
+        // dd("save");
         $this->validate([
 
             'name' => 'required',
@@ -84,15 +86,17 @@ class Employees extends Component
 
             'status' => 'required',
 
-            'sss_no' => 'required',
+            // 'sss_no' => 'required',
 
-            'pagibig_no' => 'required',
+            // 'pagibig_no' => 'required',
 
-            'philhealth_no' => 'required',
+            // 'philhealth_no' => 'required',
 
-            'tin_no' => 'required',
+            // 'tin_no' => 'required',
 
         ]);
+
+        dd("validation");
 
         $employee = Employee::create([
 
@@ -119,6 +123,7 @@ class Employees extends Component
             'tin_no' => $this->tin_no,
 
         ]);
+        
 
         foreach ($this->allowances as $allowance) {
 

@@ -1,7 +1,7 @@
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-200">
 
     <!-- Top Bar -->
-    <div class="space-y-6">
+    <div class="space-y-6 m-5">
 
         <!-- PAGE HEADER -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -926,10 +926,12 @@
                     @if($isEditing)
 
                         <button
-                            wire:click="updateEmployee"
-                            class="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl transition">
 
-                            Save Changes
+                            wire:click="{{ $isCreating ? 'saveEmployee' : 'updateEmployee' }}"
+
+                            class="rounded-xl bg-green-600 px-6 py-3 font-medium text-white hover:bg-green-700">
+
+                            {{ $isCreating ? 'Create Employee' : 'Save Changes' }}
 
                         </button>
 
