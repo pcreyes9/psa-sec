@@ -6,6 +6,9 @@ use Livewire\Component;
 use App\Models\Employee;
 use App\Models\Attendance;
 use App\Models\Setting;
+use Illuminate\Validation\ValidationException;
+
+
 
 
 class Employees extends Component
@@ -18,7 +21,7 @@ class Employees extends Component
     public $employee_modal = null;
 
     public $allowances = [];
-    public $deductions = [];    
+    public $deductions = [];
 
     public $isEditing = false;
 
@@ -39,7 +42,7 @@ class Employees extends Component
 
     public function createEmployee()
     {
-        
+
         $this->reset([
 
             'name',
@@ -70,33 +73,40 @@ class Employees extends Component
     public function saveEmployee()
     {
         // dd("save");
-        $this->validate([
 
-            'name' => 'required',
+        try {
 
-            'email' => 'required|email|unique:employees,email',
+            $this->validate([
+                'name' => 'required',
 
-            'phone_number' => 'required',
+                'email' => 'required|email|unique:employees,email',
 
-            'position' => 'required',
+                'phone_number' => 'required',
 
-            'department' => 'required',
+                'position' => 'required',
 
-            'monthly_salary' => 'required|numeric',
+                'department' => 'required',
 
-            'status' => 'required',
+                'monthly_salary' => 'required|numeric',
 
-            // 'sss_no' => 'required',
+                // 'status' => 'required',
 
-            // 'pagibig_no' => 'required',
+                // 'sss_no' => 'required',
 
-            // 'philhealth_no' => 'required',
+                // 'pagibig_no' => 'required',
 
-            // 'tin_no' => 'required',
+                // 'philhealth_no' => 'required',
 
-        ]);
+                // 'tin_no' => 'required',
+            ]);
 
-        dd("validation");
+        } catch (ValidationException $e) {
+
+            dd($e->errors());
+
+        }
+
+        // dd("validation");
 
         $employee = Employee::create([
 
@@ -112,7 +122,7 @@ class Employees extends Component
 
             'monthly_salary' => $this->monthly_salary,
 
-            'status' => $this->status,
+            'status' => 'Active',
 
             'sss_no' => $this->sss_no,
 
@@ -122,8 +132,10 @@ class Employees extends Component
 
             'tin_no' => $this->tin_no,
 
+            'hiring_date' => now()
+
         ]);
-        
+
 
         foreach ($this->allowances as $allowance) {
 
@@ -294,10 +306,10 @@ class Employees extends Component
             'department' => 'required',
             'monthly_salary' => 'required|numeric',
             'status' => 'required',
-            'sss_no' => 'required',
-            'pagibig_no' => 'required',
-            'philhealth_no' => 'required',
-            'tin_no' => 'required',
+            // 'sss_no' => 'required',
+            // 'pagibig_no' => 'required',
+            // 'philhealth_no' => 'required',
+            // 'tin_no' => 'required',
         ]);
 
         $this->employee_modal->update([

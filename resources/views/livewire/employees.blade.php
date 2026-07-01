@@ -368,6 +368,98 @@
 
                             </div>
 
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    PhilHealth Number
+                                </label>
+
+                                @if($isEditing)
+
+                                    <input
+                                        type="text"
+                                        wire:model="philhealth_no"
+                                        class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                @else
+
+                                    <div class="mt-1 text-gray-800 font-medium">
+                                        {{ $philhealth_no }}
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    Pag-Ibig Number
+                                </label>
+
+                                @if($isEditing)
+
+                                    <input
+                                        type="text"
+                                        wire:model="pagibig_no"
+                                        class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                @else
+
+                                    <div class="mt-1 text-gray-800 font-medium">
+                                        {{ $pagibig_no }}
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    SSS Number
+                                </label>
+
+                                @if($isEditing)
+
+                                    <input
+                                        type="text"
+                                        wire:model="sss_no"
+                                        class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                @else
+
+                                    <div class="mt-1 text-gray-800 font-medium">
+                                        {{ $sss_no }}
+                                    </div>
+
+                                @endif
+
+                            </div>
+
+                            <div>
+
+                                <label class="text-xs uppercase tracking-wide text-gray-500">
+                                    TIN Number
+                                </label>
+
+                                @if($isEditing)
+
+                                    <input
+                                        type="text"
+                                        wire:model="tin_no"
+                                        class="w-full mt-1 border border-gray-300 rounded-xl p-3">
+
+                                @else
+
+                                    <div class="mt-1 text-gray-800 font-medium">
+                                        {{ $tin_no }}
+                                    </div>
+
+                                @endif
+
+                            </div>
+
                         </div>
 
                     </div>
@@ -511,7 +603,7 @@
                         </div>
 
                     </div>
-                    
+
                     <!-- ALLOWANCES -->
                     <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5">
 
@@ -859,7 +951,7 @@
 
                                 <div class="mt-4 border-t pt-3">
                                     <div class="text-xs uppercase text-gray-500 mb-2">
-                                        Used Leave Dates 
+                                        Used Leave Dates
                                     </div>
 
                                     @forelse($sickLeaveDates as $date)
