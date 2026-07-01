@@ -1,5 +1,5 @@
 <div class="bg-white border rounded-2xl shadow-sm overflow-hidden">
-
+    <x-flash-message/>
     <div class="flex items-center justify-between p-6 border-b">
 
         <div>

@@ -2,7 +2,6 @@
 
     <!-- Top Bar -->
     <div class="flex items-center justify-between flex-wrap md:flex-row p-4 bg-white gap-4">
-
         <div class="relative">
             <input type="text"
                    class="block p-2 ps-10 text-sm border border-gray-300 rounded-lg w-80 bg-gray-50"
@@ -12,7 +11,6 @@
                 🔍
             </div>
         </div>
-
     </div>
 
     <!-- TABLE -->
@@ -754,10 +752,10 @@
 
                                 <div class="mt-4 border-t pt-3">
                                     <div class="text-xs uppercase text-gray-500 mb-2">
-                                        Used Leave Dates ({{ count($vacationLeaves) }})
+                                        Used Leave Dates
                                     </div>
 
-                                    @forelse($vacationLeaves as $date)
+                                    @forelse($vacationLeaveDates as $date)
                                         <div class="flex justify-between py-1">
                                             <span class="text-sm text-gray-700">
                                                 {{ \Carbon\Carbon::parse($date)->format('M d, Y - D') }}
@@ -793,10 +791,10 @@
 
                                 <div class="mt-4 border-t pt-3">
                                     <div class="text-xs uppercase text-gray-500 mb-2">
-                                        Used Leave Dates ({{ count($sickLeaves) }})
+                                        Used Leave Dates 
                                     </div>
 
-                                    @forelse($sickLeaves as $date)
+                                    @forelse($sickLeaveDates as $date)
                                         <div class="flex justify-between py-1">
                                             <span class="text-sm text-gray-700">
                                                 {{ \Carbon\Carbon::parse($date)->format('M d, Y - D') }}

@@ -1,8 +1,25 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Exports\PayrollExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\PayslipController;
 
-Route::view('/', 'employees');
+// EXPORTS
+Route::get(
+    '/payslip/{payrollItem}',
+    [PayslipController::class, 'show']
+)->name('payslip.show');
+
+
+Route::get(
+    '/payroll/export/{month}/{cutoff}',
+    [PayrollController::class, 'export']
+)->name('payroll.export');
+
+// PAGES
+Route::view('/', 'attendance');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

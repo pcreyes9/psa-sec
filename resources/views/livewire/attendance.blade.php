@@ -1,30 +1,70 @@
-<div class="space-y-6 mx-2 my-2">
+<div class="space-y-6 p-4">
 
-    @if(session()->has('success'))
+    <x-flash-message />
 
-        <div class="bg-green-100 text-green-700 border border-green-300 rounded-xl p-3">
-            {{ session('success') }}
+    {{-- HEADER --}}
+    <div
+        x-data="{
+            now: new Date(),
+            init() {
+                setInterval(() => {
+                    this.now = new Date();
+                }, 1000);
+            }
+        }"
+        class="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 rounded-3xl p-6 text-white shadow-lg">
+
+        <div class="flex flex-col lg:flex-row lg:items-center">
+
+            <div>
+
+                <h1 class="text-3xl font-bold">
+                    Attendance Monitoring
+                </h1>
+
+                <p class="text-blue-100 mt-1">
+                    PSA Timekeeping System
+                </p>
+
+            </div>
+
+            <div class="ml-auto text-right mt-4 lg:mt-0">
+
+                <div
+                    class="text-6xl font-extrabold tracking-tight text-white drop-shadow-lg"
+                    x-text="now.toLocaleTimeString()">
+                </div>
+
+                <div
+                    class="text-white"
+                    x-text="now.toLocaleDateString('en-PH', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })">
+                </div>
+
+            </div>
+
         </div>
 
-    @endif
+    </div>
 
-    <div class="bg-white border rounded-2xl p-5">
+    {{-- TIME IN / OUT --}}
+    <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-6">
 
-        <h2 class="text-xl font-bold mb-4">
-            Attendance Monitoring
-        </h2>
+        <div class="grid lg:grid-cols-4 gap-5">
 
-        <div class="grid md:grid-cols-3 gap-4">
+            <div class="lg:col-span-3">
 
-            <div class="md:col-span-2">
-
-                <label class="block text-sm mb-2">
-                    Employee
+                <label class="block text-sm font-medium text-gray-600 mb-2">
+                    Select Employee
                 </label>
 
                 <select
-                    wire:model="selectedEmployee"
-                    class="w-full rounded-xl border-gray-300">
+                    wire:model.live="selectedEmployee"
+                    class="w-full rounded-2xl border-gray-300 focus:ring-2 focus:ring-blue-500">
 
                     <option value="">
                         Select Employee
@@ -46,7 +86,7 @@
 
             <div>
 
-                <label class="block text-sm mb-2">
+                <label class="block text-sm font-medium text-gray-600 mb-2">
                     Actions
                 </label>
 
@@ -54,17 +94,27 @@
 
                     <button
                         wire:click="timeIn"
-                        class="flex-1 bg-green-600 text-white py-2 rounded-xl">
+                        @disabled(!$canTimeIn)
+                        class="flex-1 py-3 rounded-2xl font-semibold transition
 
-                        Time In
+                        {{ $canTimeIn
+                            ? 'bg-green-600 hover:bg-green-700 text-white'
+                            : 'bg-gray-200 text-gray-700 cursor-not-allowed border border-gray-300' }}">
+
+                        ⏱ Time In
 
                     </button>
 
                     <button
                         wire:click="timeOut"
-                        class="flex-1 bg-red-600 text-white py-2 rounded-xl">
+                        @disabled(!$canTimeOut)
+                        class="flex-1 py-3 rounded-2xl font-semibold transition
 
-                        Time Out
+                        {{ $canTimeOut
+                            ? 'bg-red-600 hover:bg-red-700 text-white'
+                            : 'bg-gray-200 text-gray-700 cursor-not-allowed border border-gray-300' }}">
+
+                        🚪 Time Out
 
                     </button>
 
@@ -76,37 +126,83 @@
 
     </div>
 
-    <div class="bg-white border rounded-2xl p-5">
+    {{-- SUMMARY --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-        <h3 class="text-lg font-bold mb-4">
-            Today's Attendance
-        </h3>
+        <div class="bg-white border rounded-3xl p-5 shadow-sm">
+
+            <div class="text-sm text-gray-500">
+                Present Today
+            </div>
+
+            <div class="text-3xl font-bold text-blue-600 mt-2">
+                {{ $this->todayAttendance->count() }}
+            </div>
+
+        </div>
+
+        <div class="bg-white border rounded-3xl p-5 shadow-sm">
+
+            <div class="text-sm text-gray-500">
+                Timed In
+            </div>
+
+            <div class="text-3xl font-bold text-orange-600 mt-2">
+                {{ $this->todayAttendance->whereNotNull('time_in')->count() }}
+            </div>
+
+        </div>
+
+        <div class="bg-white border rounded-3xl p-5 shadow-sm">
+
+            <div class="text-sm text-gray-500">
+                Completed
+            </div>
+
+            <div class="text-3xl font-bold text-green-600 mt-2">
+                {{ $this->todayAttendance->whereNotNull('time_out')->count() }}
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- ATTENDANCE TABLE --}}
+    <div class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+
+        <div class="px-6 py-4 border-b">
+
+            <h3 class="text-lg font-bold text-gray-800">
+                Today's Attendance
+            </h3>
+
+        </div>
 
         <div class="overflow-x-auto">
 
-            <table class="w-full text-sm">
+            <table class="w-full">
 
-                <thead class="bg-gray-100">
+                <thead class="bg-gray-50">
 
-                    <tr>
+                    <tr class="text-xs uppercase tracking-wide text-gray-500">
 
-                        <th class="p-3 text-left">
+                        <th class="px-6 py-4 text-left">
                             Employee
                         </th>
 
-                        <th class="p-3 text-left">
+                        <th class="px-6 py-4 text-left">
                             Time In
                         </th>
 
-                        <th class="p-3 text-left">
+                        <th class="px-6 py-4 text-left">
                             Time Out
                         </th>
 
-                        <th class="p-3 text-left">
+                        <th class="px-6 py-4 text-left">
                             Hours
                         </th>
 
-                        <th class="p-3 text-left">
+                        <th class="px-6 py-4 text-left">
                             Status
                         </th>
 
@@ -114,54 +210,58 @@
 
                 </thead>
 
-                <tbody>
+                <tbody class="divide-y divide-gray-100">
 
                     @forelse($this->todayAttendance as $attendance)
 
-                        <tr class="border-t">
+                        <tr class="hover:bg-gray-50 transition">
 
-                            <td class="p-3">
+                            <td class="px-6 py-4 font-medium text-gray-800">
                                 {{ $attendance->employee->name }}
                             </td>
 
-                            <td class="p-3">
+                            <td class="px-6 py-4 text-gray-600">
 
-                                @if($attendance->time_in)
-
-                                    {{ \Carbon\Carbon::parse(
-                                        $attendance->time_in
-                                    )->format('h:i A') }}
-
-                                @else
-                                    -
-                                @endif
+                                {{ $attendance->time_in
+                                    ? \Carbon\Carbon::parse($attendance->time_in)->format('h:i A')
+                                    : '-' }}
 
                             </td>
 
-                            <td class="p-3">
+                            <td class="px-6 py-4 text-gray-600">
 
-                                @if($attendance->time_out)
-
-                                    {{ \Carbon\Carbon::parse(
-                                        $attendance->time_out
-                                    )->format('h:i A') }}
-
-                                @else
-                                    -
-                                @endif
+                                {{ $attendance->time_out
+                                    ? \Carbon\Carbon::parse($attendance->time_out)->format('h:i A')
+                                    : '-' }}
 
                             </td>
 
-                            <td class="p-3">
+                            <td class="px-6 py-4 font-semibold">
+
                                 {{ number_format(
                                     $attendance->total_hours ?? 0,
                                     2
                                 ) }}
+
                             </td>
 
-                            <td class="p-3">
+                            <td class="px-6 py-4">
 
-                                <span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-700">
+                                @php
+
+                                    $statusColors = [
+                                        'Present' => 'bg-green-100 text-green-700',
+                                        'Late' => 'bg-yellow-100 text-yellow-700',
+                                        'Absent' => 'bg-red-100 text-red-700',
+                                        'Vacation Leave' => 'bg-blue-100 text-blue-700',
+                                        'Sick Leave' => 'bg-purple-100 text-purple-700',
+                                    ];
+
+                                @endphp
+
+                                <span class="px-3 py-1 rounded-full text-xs font-medium
+
+                                    {{ $statusColors[$attendance->status] ?? 'bg-gray-100 text-gray-700' }}">
 
                                     {{ $attendance->status }}
 
@@ -177,9 +277,9 @@
 
                             <td
                                 colspan="5"
-                                class="p-5 text-center text-gray-500">
+                                class="text-center py-12 text-gray-500">
 
-                                No attendance records today.
+                                No attendance records found today.
 
                             </td>
 

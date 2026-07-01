@@ -15,4 +15,11 @@ class Payroll extends Model
         'total_amount',
         'status',
     ];
+
+    public function items()
+    {
+        return $this->hasMany(
+            PayrollItem::class
+        );
+    }
 }

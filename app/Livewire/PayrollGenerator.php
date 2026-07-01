@@ -3,307 +3,182 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Employee;
-use App\Models\Attendance;
 use App\Models\Payroll;
 use App\Models\PayrollItem;
+use App\Exports\PayrollExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
+
 
 class PayrollGenerator extends Component
 {
     public $month;
-    public $cutoff = '1';
+    public $cutoff = 1;
 
-    public $generatedPayroll = null;
     public $payrollItems = [];
+
+    public $payrollExists = false;
+
 
     public function mount()
     {
         $this->month = now()->format('Y-m');
+
+        $this->loadPayrollItems();
+    }
+
+    public function updated($property)
+    {
+        if (
+            in_array($property, [
+                'month',
+                'cutoff'
+            ])
+        ) {
+            $this->loadPayrollItems();
+        }
+    }
+
+    public function loadPayrollItems()
+    {
+        $payrollCode =
+            $this->month . '-C' . $this->cutoff;
+
+        $this->payrollExists = Payroll::where(
+            'payroll_code',
+            $payrollCode
+        )->exists();
+
+        $this->payrollItems = PayrollItem::with(
+                'employee'
+            )
+            ->where(
+                'payroll_code',
+                $payrollCode
+            )
+            ->get();
     }
 
     public function generatePayroll()
     {
+        $payrollCode =
+            $this->month . '-C' . $this->cutoff;
+
+        $exists = Payroll::where(
+            'payroll_code',
+            $payrollCode
+        )->exists();
+
+        if ($exists) {
+
+            session()->flash(
+                'error',
+                'Payroll already exists.'
+            );
+
+            return;
+        }
+
         [$year, $month] = explode('-', $this->month);
 
-        /*
-        |--------------------------------------------------------------------------
-        | DETERMINE CUTOFF DATES
-        |--------------------------------------------------------------------------
-        */
+        if ($this->cutoff == 1) {
 
-        if ($this->cutoff == '1') {
+            $dateFrom = Carbon::create(
+                $year,
+                $month,
+                1
+            );
 
-            $dateFrom = Carbon::create($year, $month, 1)
-                ->startOfDay();
-
-            $dateTo = Carbon::create($year, $month, 15)
-                ->endOfDay();
+            $dateTo = Carbon::create(
+                $year,
+                $month,
+                15
+            );
 
         } else {
 
-            $dateFrom = Carbon::create($year, $month, 16)
-                ->startOfDay();
+            $dateFrom = Carbon::create(
+                $year,
+                $month,
+                16
+            );
 
-            $dateTo = Carbon::create($year, $month)
-                ->endOfMonth()
-                ->endOfDay();
+            $dateTo = Carbon::create(
+                $year,
+                $month
+            )->endOfMonth();
+
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREATE PAYROLL
-        |--------------------------------------------------------------------------
-        */
-
         $payroll = Payroll::create([
 
-            'payroll_code' =>
-                'PAY-' .
-                now()->format('YmdHis'),
+            'payroll_code' => $payrollCode,
 
             'month' => $this->month,
 
             'cutoff' => $this->cutoff,
 
             'date_from' => $dateFrom,
+
             'date_to' => $dateTo,
 
-            'total_amount' => 0,
+            'total_amount' =>
+                PayrollItem::where(
+                    'payroll_code',
+                    $payrollCode
+                )->sum('net_pay'),
 
-            'status' => 'Draft',
+            'status' => 'Processed',
         ]);
 
-        $grandTotal = 0;
+        PayrollItem::where(
+            'payroll_code',
+            $payrollCode
+        )->update([
 
-        /*
-        |--------------------------------------------------------------------------
-        | LOOP EMPLOYEES
-        |--------------------------------------------------------------------------
-        */
+            'payroll_id' => $payroll->id,
 
-        foreach (Employee::all() as $employee) {
+            'status' => 'Finalized',
 
-            $attendanceRecords = Attendance::where(
-                    'employee_id',
-                    $employee->id
-                )
-                ->whereBetween('attendance_date', [
-                    $dateFrom->toDateString(),
-                    $dateTo->toDateString()
-                ])
-                ->get();
-
-            /*
-            |--------------------------------------------------------------------------
-            | COMPUTATIONS
-            |--------------------------------------------------------------------------
-            */
-
-            $daysPresent = 0;
-
-            $regularHours = 0;
-            $overtimeHours = 0;
-
-            $lateMinutes = 0;
-
-            foreach ($attendanceRecords as $att) {
-
-                if (!$att->time_in || !$att->time_out) {
-                    continue;
-                }
-
-                $timeIn = Carbon::parse($att->time_in);
-                $timeOut = Carbon::parse($att->time_out);
-
-                /*
-                |--------------------------------------------------------------------------
-                | TOTAL HOURS
-                |--------------------------------------------------------------------------
-                */
-
-                $hours = round(
-                    $timeIn->diffInMinutes($timeOut) / 60,
-                    2
-                );
-
-                /*
-                |--------------------------------------------------------------------------
-                | REGULAR HOURS
-                |--------------------------------------------------------------------------
-                */
-
-                $regularHours += min($hours, 10);
-
-                /*
-                |--------------------------------------------------------------------------
-                | OVERTIME
-                |--------------------------------------------------------------------------
-                */
-
-                $computedOT = max(0, $hours - 10);
-
-                $ot = $computedOT > 1
-                    ? $computedOT
-                    : 0;
-
-                $overtimeHours += $ot;
-
-                /*
-                |--------------------------------------------------------------------------
-                | LATE
-                |--------------------------------------------------------------------------
-                */
-
-                $graceTime = Carbon::parse($att->attendance_date)
-                    ->setTime(8, 15);
-
-                if ($timeIn->greaterThan($graceTime)) {
-
-                    $lateMinutes +=
-                        $graceTime->diffInMinutes($timeIn);
-                }
-
-                /*
-                |--------------------------------------------------------------------------
-                | PRESENT DAYS
-                |--------------------------------------------------------------------------
-                */
-
-                if (
-                    in_array($att->status, [
-                        'Present',
-                        'Late'
-                    ])
-                ) {
-                    $daysPresent++;
-                }
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | RATES
-            |--------------------------------------------------------------------------
-            */
-
-            $dailyRate = round(
-                $employee->monthly_salary / 22,
-                2
-            );
-
-            $hourlyRate = round(
-                $dailyRate / 10,
-                2
-            );
-
-            /*
-            |--------------------------------------------------------------------------
-            | PAY
-            |--------------------------------------------------------------------------
-            */
-
-            $basicPay = round(
-                $regularHours * $hourlyRate,
-                2
-            );
-
-            $overtimePay = round(
-                $overtimeHours *
-                $hourlyRate *
-                1.25,
-                2
-            );
-
-            /*
-            |--------------------------------------------------------------------------
-            | LATE DEDUCTION
-            |--------------------------------------------------------------------------
-            */
-
-            $lateDeduction = round(
-                ($lateMinutes / 60) * $hourlyRate,
-                2
-            );
-
-            /*
-            |--------------------------------------------------------------------------
-            | GROSS & NET
-            |--------------------------------------------------------------------------
-            */
-
-            $allowances = $employee->allowances()
-                ->where('is_active', 1)
-                ->sum('amount');
-            // dd($allowances);
-
-            $grossPay =
-                $basicPay +
-                $overtimePay +
-                $allowances;
-
-            $netPay =
-                $grossPay -
-                $lateDeduction;
-
-            /*
-            |--------------------------------------------------------------------------
-            | SAVE PAYROLL ITEM
-            |--------------------------------------------------------------------------
-            */
-
-            PayrollItem::create([
-
-                'payroll_id' => $payroll->id,
-                'employee_id' => $employee->id,
-
-                'days_present' => $daysPresent,
-
-                'regular_hours' => round($regularHours, 2),
-                'overtime_hours' => round($overtimeHours, 2),
-
-                'daily_rate' => $dailyRate,
-                'hourly_rate' => $hourlyRate,
-
-                'basic_pay' => $basicPay,
-                'overtime_pay' => $overtimePay,
-
-                'allowances' => $allowances,
-
-                'late_deduction' => $lateDeduction,
-
-                'gross_pay' => $grossPay,
-                'net_pay' => $netPay,
-            ]);
-
-            $grandTotal += $netPay;
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE TOTAL PAYROLL
-        |--------------------------------------------------------------------------
-        */
-
-        $payroll->update([
-            'total_amount' => round($grandTotal, 2)
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | LOAD RESULTS
-        |--------------------------------------------------------------------------
-        */
+        $this->loadPayrollItems();
 
-        $this->generatedPayroll = $payroll;
+        session()->flash(
+            'success',
+            'Payroll generated successfully.'
+        );
+    }
 
-        $this->payrollItems = PayrollItem::with('employee')
-            ->where('payroll_id', $payroll->id)
+    public function exportPayroll()
+    {
+        $payrollCode =
+            $this->month . '-C' . $this->cutoff;
+
+        $items = PayrollItem::with([
+                'employee',
+                'allowances',
+                'deductions'
+            ])
+            ->where(
+                'payroll_code',
+                $payrollCode
+            )
             ->get();
-        // dd($this->payrollItems);
+
+        return Excel::download(
+            new PayrollExport(
+                $items,
+                $this->month,
+                $this->cutoff
+            ),
+            "Payroll-{$payrollCode}.xlsx"
+        );
     }
 
     public function render()
     {
-        return view('livewire.payroll-generator');
+        return view(
+            'livewire.payroll-generator'
+        );
     }
 }

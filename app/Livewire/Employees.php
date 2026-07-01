@@ -22,11 +22,12 @@ class Employees extends Component
 
     public $isEditing = false;
 
-    public $vacationLeaves = [], $sickLeaves = [], $availVL = 0, $availSL = 0;
+    public $vacationLeaveDates = [], $sickLeaveDates = [], $vacationLeaves = 0, $sickLeaves = 0, $availVL = 0, $availSL = 0;
 
     public function mount()
     {
         $this->employees = Employee::latest()->get();
+        // dd($this->employees);
     }
 
     public function render()
@@ -45,20 +46,65 @@ class Employees extends Component
         $this->isEditing = false;
         $employee = Employee::findOrFail($id);
 
-        $this->vacationLeaves = Attendance::where('employee_id', $employee->id)
-            ->where('status', 'Vacation Leave')
+        $this->vacationLeaves = Attendance::where(
+                'employee_id',
+                $employee->id
+            )
+            ->whereIn('status', [
+                'Vacation Leave',
+                'Half Day - VL'
+            ])
             ->orderBy('attendance_date')
+            ->get();
+
+        $this->availVL =
+            Setting::where(
+                'key',
+                'vacation_leaves'
+            )->value('value')
+            -
+            $this->vacationLeaves->sum(function ($leave) {
+
+                return $leave->status === 'Half Day - VL'
+                    ? 0.5
+                    : 1;
+
+            });
+
+        $this->vacationLeaveDates = $this->vacationLeaves
             ->pluck('attendance_date')
             ->toArray();
 
-        $this->sickLeaves = Attendance::where('employee_id',$employee->id)
-            ->where('status', 'Sick Leave')
-            ->orderBy('attendance_date')
+        $this->sickLeaves = Attendance::where(
+            'employee_id',
+            $employee->id
+        )
+        ->whereIn('status', [
+            'Sick Leave',
+            'Half Day - SL'
+        ])
+        ->orderBy('attendance_date')
+        ->get();
+
+    $this->availSL =
+        Setting::where(
+            'key',
+            'sick_leaves'
+        )->value('value')
+        -
+        $this->sickLeaves->sum(function ($leave) {
+
+            return $leave->status === 'Half Day - SL'
+                ? 0.5
+                : 1;
+
+        });
+
+        $this->sickLeaveDates = $this->sickLeaves
             ->pluck('attendance_date')
             ->toArray();
 
-        $this->availVL = Setting::where('key', 'vacation_leaves')->pluck('value')->first() - count($this->vacationLeaves);
-        $this->availSL = Setting::where('key', 'sick_leaves')->pluck('value')->first() - count($this->sickLeaves);
+
 
         // dd($this->availVL);
 

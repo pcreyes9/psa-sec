@@ -10,6 +10,8 @@ use App\Models\PayrollItem;
 use App\Models\TaxBracket;
 use Carbon\Carbon;
 use App\Models\Setting;
+use App\Models\PayrollItemAllowance;
+use App\Models\PayrollItemDeduction;
 
 class EmployeePayroll extends Component
 {
@@ -81,6 +83,8 @@ class EmployeePayroll extends Component
     public $nonWorkingHolidayOtNdPay = 0;
     public $regHolidayOtNdPay = 0;
 
+    public $payrollItem = null;
+
     // TOTAL PREMIUMS
     public $overtimePay = 0;
 
@@ -90,7 +94,8 @@ class EmployeePayroll extends Component
                 'allowances',
                 'deductions'
             ])
-            ->orderBy('name')
+            ->where('status', 'Active')
+            ->orderBy('id')
             ->get();
 
         $this->month = now()->format('Y-m');
@@ -110,6 +115,16 @@ class EmployeePayroll extends Component
             ->findOrFail($id);
 
         $this->computePayroll();
+        
+        $this->payrollItem = PayrollItem::where(
+            'employee_id',
+            $this->selectedEmployee->id
+        )
+        ->where(
+            'payroll_code',
+            $this->month . '-C' . $this->cutoff
+        )
+        ->first();
     }
 
     public function updated($property)
@@ -238,7 +253,7 @@ class EmployeePayroll extends Component
         $workingHours =
             $this->settings['working_hours_per_day'];
 
-        foreach ($this->attendanceRecords as $att) {
+        foreach ($this->attendanceRecords as $att) {    
 
             if (!$att->time_in || !$att->time_out) {
                 continue;
@@ -384,6 +399,8 @@ class EmployeePayroll extends Component
                     [
                         'Present',
                         'Late',
+                        'Half Day - VL',
+                        'Half Day - SL',
                         'Regular Holiday',
                         'Special Non-Working Holiday',
                     ]
@@ -512,8 +529,8 @@ class EmployeePayroll extends Component
         $this->overtimePay = round(
 
             $this->weekendPay +
-            $this->nonWorkingHolidayPay +
-            $this->regHolidayPay +
+            // $this->nonWorkingHolidayPay +
+            // $this->regHolidayPay +
 
             $this->weekdayOtPay +
             $this->weekendOtPay +
@@ -550,11 +567,11 @@ class EmployeePayroll extends Component
             2
         );
 
-        $this->lateDeduction = round(
-            ($this->lateMinutes / 60) *
-            $this->hourlyRate,
-            2
-        );
+        // $this->lateDeduction = round(
+        //     ($this->lateMinutes / 60) *
+        //     $this->hourlyRate,
+        //     2
+        // );
 
         $monthlyDeductions = 0;
 
@@ -588,6 +605,8 @@ class EmployeePayroll extends Component
             $this->otherDeductions,
             2
         );
+        
+        // dd($this->deductions);
 
         $this->grossPay = round(
             $this->basicPay +
@@ -651,27 +670,51 @@ class EmployeePayroll extends Component
     }
 
 
-    public function approvePayroll()
+    public function createPayrollItem()
     {
         if (!$this->selectedEmployee) {
             return;
         }
 
-        $this->preparedPayrolls[
-            $this->selectedEmployee->id
-        ] = [
+        $payrollCode =
+            $this->month . '-C' . $this->cutoff;
+
+        // Prevent duplicate payroll item
+        $exists = PayrollItem::where(
+                'payroll_code', $payrollCode)
+            ->where('employee_id', $this->selectedEmployee->id)->exists();
+
+        if ($exists) {
+
+            session()->flash(
+                'error',
+                'Payroll already exists for ' .  $this->month . ' - Cutoff ' . $this->cutoff . ' for ' . $this->selectedEmployee->name
+            );
+
+            return;
+        }
+        // dd($this->deductions - $this->taxDeduction);
+        $payrollItem = PayrollItem::create([
+
+            'payroll_id' => null,
+
+            'payroll_code' => $payrollCode,
+
+            'month' => $this->month,
+
+            'cutoff' => $this->cutoff,
 
             'employee_id' =>
                 $this->selectedEmployee->id,
 
-            'days_present' =>
-                $this->daysPresent,
+                // 'days_present' =>
+            //     $this->daysPresent,
 
-            'regular_hours' =>
-                $this->regularHours,
+            // 'regular_hours' =>
+            //     $this->regularHours,
 
-            'overtime_hours' =>
-                $this->overtimeHours,
+            // 'overtime_hours' =>
+            //     $this->overtimeHours,
 
             'daily_rate' =>
                 $this->dailyRate,
@@ -692,9 +735,9 @@ class EmployeePayroll extends Component
                 $this->lateDeduction,
 
             'other_deductions' =>
-                $this->otherDeductions,
+                $this->deductions - $this->taxDeduction,
 
-            'tax_deduction' => 
+            'tax_deduction' =>
                 $this->taxDeduction,
 
             'gross_pay' =>
@@ -702,73 +745,53 @@ class EmployeePayroll extends Component
 
             'net_pay' =>
                 $this->netPay,
-        ];
 
-        session()->flash(
-            'success',
-            'Payroll approved successfully.'
-        );
-    }
-
-    public function finalizePayroll()
-    {
-        if (count($this->preparedPayrolls) == 0) {
-            return;
-        }
-
-        $payroll = Payroll::create([
-
-            'payroll_code' =>
-                'PAY-' . now()->format('YmdHis'),
-
-            'month' => $this->month,
-
-            'cutoff' => $this->cutoff,
-
-            'total_amount' => collect(
-                $this->preparedPayrolls
-            )->sum('net_pay'),
-
-            'status' => 'Finalized',
+            'status' => 'Draft',
         ]);
 
-        foreach ($this->preparedPayrolls as $item) {
+        // dd($this->selectedEmployee->allowances);
+        foreach ($this->selectedEmployee->allowances as $allowance) {
+            // dd($allowance);
+            PayrollItemAllowance::create([
 
-            PayrollItem::create([
+                'payroll_item_id' =>
+                    $payrollItem->id,
 
-                'payroll_id' => $payroll->id,
+                'allowance_name' =>
+                    $allowance->name,
 
-                'employee_id' => $item['employee_id'],
+                'amount' =>
+                    $allowance->amount / 2,
 
-                'days_present' => $item['days_present'],
+            ]);
+        }
 
-                'regular_hours' => $item['regular_hours'],
+        foreach ($this->deductionBreakdown as $deduction) {
 
-                'overtime_hours' => $item['overtime_hours'],
+            if ($deduction['amount'] <= 0) {
+                continue;
+            }
 
-                'daily_rate' => $item['daily_rate'],
+            PayrollItemDeduction::create([
 
-                'hourly_rate' => $item['hourly_rate'],
+                'payroll_item_id' =>
+                    $payrollItem->id,
 
-                'basic_pay' => $item['basic_pay'],
+                'deduction_name' =>
+                    $deduction['name'],
 
-                'overtime_pay' => $item['overtime_pay'],
+                'deduction_type' =>
+                    $deduction['type'],
 
-                'allowances' => $item['allowances'],
+                'amount' =>
+                    $deduction['amount'],
 
-                'late_deduction' => $item['late_deduction'],
-                
-                'tax_deduction' => $item['tax_deduction'],
-
-                'gross_pay' => $item['gross_pay'],
-
-                'net_pay' => $item['net_pay'],
             ]);
         }
 
         session()->flash(
             'success',
-            'Payroll finalized successfully.'
+            'Payroll item created successfully for ' . $this->selectedEmployee->name
         );
     }
 

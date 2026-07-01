@@ -175,7 +175,7 @@ class Settings extends Component
 
         session()->flash(
             'success',
-            'Attendance settings updated successfully.'
+            'Settings updated successfully.'
         );
     }
 

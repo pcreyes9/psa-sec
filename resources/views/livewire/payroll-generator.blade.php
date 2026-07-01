@@ -1,237 +1,260 @@
 <div class="space-y-6">
 
-    <!-- HEADER -->
-    <div class="bg-white border rounded-2xl shadow-sm p-6">
+    <x-flash-message />
 
-        <h1 class="text-2xl font-bold text-gray-800">
-            Payroll Generator
-        </h1>
+    <div class="bg-white rounded-3xl border p-6">
 
-        <p class="text-sm text-gray-500 mt-1">
-            Generate payroll from attendance records
-        </p>
+        <div class="flex items-center justify-between">
 
-    </div>
+            <h2 class="text-2xl font-bold">
+                Payroll Generator
+            </h2>
 
-    <!-- FILTERS -->
-    <div class="bg-white border rounded-2xl shadow-sm p-6">
+            <div class="flex gap-2">
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button
+                    wire:click="generatePayroll"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl">
 
-            <!-- MONTH -->
+                    Generate Payroll
+
+                </button>
+
+                @if($payrollExists)
+
+                    <a
+                        href="{{ route('payroll.export', [
+                            'month' => $month,
+                            'cutoff' => $cutoff
+                        ]) }}"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl">
+
+                        Export Excel
+
+                    </a>
+
+                @endif
+
+            </div>
+
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mt-6">
+
             <div>
 
-                <label class="text-xs text-gray-500 mb-1 block">
-                    Payroll Month
+                <label class="text-sm text-gray-500">
+                    Month
                 </label>
 
                 <input
                     type="month"
-                    wire:model="month"
-                    class="w-full border border-gray-300 rounded-xl p-2.5">
+                    wire:model.live="month"
+                    class="w-full rounded-xl border-gray-300">
 
             </div>
 
-            <!-- CUTOFF -->
             <div>
 
-                <label class="text-xs text-gray-500 mb-1 block">
+                <label class="text-sm text-gray-500">
                     Cutoff
                 </label>
 
                 <select
-                    wire:model="cutoff"
-                    class="w-full border border-gray-300 rounded-xl p-2.5">
+                    wire:model.live="cutoff"
+                    class="w-full rounded-xl border-gray-300">
 
                     <option value="1">
-                        1st Cutoff (1–15)
+                        1st Cutoff (1-15)
                     </option>
 
                     <option value="2">
-                        2nd Cutoff (16–End)
+                        2nd Cutoff (16-End)
                     </option>
 
                 </select>
 
             </div>
 
-            <!-- BUTTON -->
-            <div class="flex items-end">
-
-                <button
-                    wire:click="generatePayroll"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2.5 font-medium">
-
-                    Generate Payroll
-
-                </button>
-
-            </div>
-
         </div>
 
     </div>
 
-    <!-- RESULTS -->
-    @if($generatedPayroll)
+    <div class="bg-white rounded-3xl border overflow-hidden">
 
-        <!-- SUMMARY -->
-        <div class="bg-white border rounded-2xl shadow-sm p-6">
+        <div class="px-6 py-4 border-b">
 
-            <div class="flex items-center justify-between">
-
-                <div>
-
-                    <h2 class="text-xl font-bold text-gray-800">
-                        {{ $generatedPayroll->payroll_code }}
-                    </h2>
-
-                    <p class="text-sm text-gray-500">
-                        {{ $generatedPayroll->month }}
-                        •
-                        {{ $generatedPayroll->cutoff == 1 ? '1st Cutoff' : '2nd Cutoff' }}
-                    </p>
-
-                </div>
-
-                <div class="text-right">
-
-                    <div class="text-xs uppercase tracking-wide text-gray-500">
-                        Total Payroll
-                    </div>
-
-                    <div class="text-3xl font-bold text-green-600">
-                        ₱{{ number_format($generatedPayroll->total_amount, 2) }}
-                    </div>
-
-                </div>
-
-            </div>
+            <h3 class="font-bold text-lg">
+                Payroll Items
+            </h3>
 
         </div>
 
-        <!-- TABLE -->
-        <div class="bg-white border rounded-2xl shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
 
-            <div class="overflow-auto">
+            <thead class="bg-gray-50">
 
-                <table class="w-full text-sm text-left">
+                <tr>
 
-                    <thead class="bg-gray-100 text-xs uppercase text-gray-600">
+                    <th class="p-4 text-left">
+                        Employee
+                    </th>
 
-                        <tr>
+                    <th class="p-4 text-right">
+                        Basic Salary (half month)
+                    </th>
 
-                            <th class="px-4 py-3">
-                                Employee
-                            </th>
+                    <th class="p-4 text-right">
+                        Total Overtime
+                    </th>
 
-                            <th class="px-4 py-3">
-                                Days
-                            </th>
+                    <th class="p-4 text-right">
+                        Total Allowance
+                    </th>
 
-                            <th class="px-4 py-3">
-                                Regular Hours
-                            </th>
+                    <th class="p-4 text-right">
+                        Deductions
+                    </th>
 
-                            <th class="px-4 py-3">
-                                OT Hours
-                            </th>
+                     <th class="p-4 text-right">
+                        Tax
+                    </th>
 
-                            <th class="px-4 py-3">
-                                Basic Pay
-                            </th>
+                    <th class="p-4 text-right">
+                        Gross Pay
+                    </th>
 
-                            <th class="px-4 py-3">
-                                OT Pay
-                            </th>
+                    <th class="p-4 text-right">
+                        Net Pay
+                    </th>
 
-                            <th class="px-4 py-3">
-                                Allowances
-                            </th>
+                    {{-- <th class="p-4 text-center">
+                        Status
+                    </th> --}}
 
-                            <th class="px-4 py-3">
-                                Late Deduction
-                            </th>
+                </tr>
 
-                            <th class="px-4 py-3">
-                                Net Pay
-                            </th>
+            </thead>
 
-                        </tr>
+            <tbody>
 
-                    </thead>
+                @forelse($payrollItems as $item)
 
-                    <tbody class="divide-y divide-gray-100">
+                    <tr class="border-t">
 
-                        @foreach($payrollItems as $item)
+                        <td class="p-4">
+                            <div class="font-medium text-gray-800">
+                                {{ $item->employee->name }}
+                            </div>
 
-                            <tr class="hover:bg-gray-50">
+                            <div class="text-xs text-gray-500">
+                                {{ $item->employee->employee_code }}
+                            </div>
+                        </td>
 
-                                <!-- EMPLOYEE -->
-                                <td class="px-4 py-3">
+                        <td class="p-4 text-right">
+                            ₱{{ number_format(
+                                $item->basic_pay,
+                                2
+                            ) }}
+                        </td>
 
-                                    <div class="font-semibold text-gray-800">
-                                        {{ $item->employee->name }}
-                                    </div>
+                        {{-- overtime --}}
+                        <td class="p-4 text-right">
+                            ₱{{ number_format(
+                                $item->overtime_pay,
+                                2
+                            ) }}
+                        </td>
 
-                                    <div class="text-xs text-gray-500">
-                                        {{ $item->employee->employee_code }}
-                                    </div>
+                        {{-- allowances --}}
+                        <td class="p-4 text-right">
+                            ₱{{ number_format(
+                                $item->allowances,
+                                2
+                            ) }}
+                        </td>
 
-                                </td>
+                        {{-- deductions --}}
+                        <td class="p-4 text-right">
+                            ₱{{ number_format(
+                                $item->other_deductions,
+                                2
+                            ) }}
+                        </td>
 
-                                <!-- DAYS -->
-                                <td class="px-4 py-3">
-                                    {{ $item->days_present }}
-                                </td>
+                        <td class="p-4 text-right">
+                            ₱{{ number_format(
+                                $item->tax_deduction,
+                                2
+                            ) }}
+                        </td>
 
-                                <!-- REGULAR HOURS -->
-                                <td class="px-4 py-3">
-                                    {{ number_format($item->regular_hours, 2) }}
-                                </td>
+                        <td class="p-4 text-right">
+                            ₱{{ number_format(
+                                $item->gross_pay,
+                                2
+                            ) }}
+                        </td>
 
-                                <!-- OT -->
-                                <td class="px-4 py-3 text-orange-600 font-medium">
-                                    {{ number_format($item->overtime_hours, 2) }}
-                                </td>
+                        <td class="p-4 text-right font-bold text-green-600">
+                            ₱{{ number_format(
+                                $item->net_pay,
+                                2
+                            ) }}
+                        </td>
 
-                                <!-- BASIC -->
-                                <td class="px-4 py-3">
-                                    ₱{{ number_format($item->basic_pay, 2) }}
-                                </td>
+                        {{-- <td class="p-4 text-center">
 
-                                <!-- OT PAY -->
-                                <td class="px-4 py-3 text-green-600 font-medium">
-                                    ₱{{ number_format($item->overtime_pay, 2) }}
-                                </td>
+                            <span class="px-3 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700">
 
-                                <!-- ALLOWANCES -->
-                                <td class="px-4 py-3 text-blue-600 font-medium">
-                                    ₱{{ number_format($item->allowances, 2) }}
-                                </td>
+                                {{ $item->status }}
 
-                                <!-- LATE -->
-                                <td class="px-4 py-3 text-red-500">
-                                    ₱{{ number_format($item->late_deduction, 2) }}
-                                </td>
+                            </span>
 
-                                <!-- NET -->
-                                <td class="px-4 py-3 font-bold text-blue-600">
-                                    ₱{{ number_format($item->net_pay, 2) }}
-                                </td>
+                        </td> --}}
 
-                            </tr>
+                    </tr>
 
-                        @endforeach
+                @empty
+                    <tr>
+                        <td
+                            colspan="4"
+                            class="p-10 text-center text-gray-500">
 
-                    </tbody>
+                            No payroll items found.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
 
-                </table>
+            {{-- <tfoot class="bg-gray-50 border-t">
 
-            </div>
+                <tr>
 
-        </div>
+                    <td class="p-4 font-bold">
+                        Total
+                    </td>
 
-    @endif
+                    <td></td>
+
+                    <td class="p-4 text-right font-bold text-xl text-green-600">
+
+                        ₱{{ number_format(
+                            collect($payrollItems)->sum('net_pay'),
+                            2
+                        ) }}
+
+                    </td>
+
+                    <td></td>
+
+                </tr>
+
+            </tfoot> --}}
+
+        </table>
+
+    </div>
 
 </div>

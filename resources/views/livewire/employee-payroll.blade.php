@@ -1,5 +1,5 @@
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-
+    <x-flash-message/>
     <!-- LEFT SIDE -->
     <div class="bg-white border rounded-2xl shadow-sm h-[77vh] overflow-hidden">
 
@@ -103,13 +103,28 @@
                 <!-- FINALIZE -->
                 <div class="flex items-end">
 
-                    <button
-                        wire:click="finalizePayroll"
-                        class="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl p-3 font-medium">
+                    @if($payrollItem)
 
-                        Finalize Payroll
+                        <a
+                            href="{{ route('payslip.show', $payrollItem->id) }}"
+                            target="_blank"
+                            class="w-full text-center bg-blue-600 hover:bg-blue-700 text-white rounded-xl p-3 font-medium">
 
-                    </button>
+                            Print Payslip
+
+                        </a>
+
+                    @else
+
+                        <button
+                            wire:click="createPayrollItem"
+                            class="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl p-3 font-medium">
+
+                            Create Employee Payroll
+
+                        </button>
+
+                    @endif
 
                 </div>
 
@@ -260,9 +275,9 @@
                                 Attendance Monitoring
                             </h3>
 
-                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                                 {{-- DAYS PRESENT --}}
-                                <div class="bg-white border rounded-xl p-4">
+                                {{-- <div class="bg-white border rounded-xl p-4">
 
                                     <div class="text-xs text-gray-500">
                                         Days Present
@@ -272,10 +287,10 @@
                                         {{ $daysPresent }}
                                     </div>
 
-                                </div>
+                                </div> --}}
 
                                 {{-- REGULAR HOURS --}}
-                                <div class="bg-white border rounded-xl p-4">
+                                {{-- <div class="bg-white border rounded-xl p-4">
 
                                     <div class="text-xs text-gray-500">
                                         Regular Hours
@@ -293,7 +308,7 @@
 
                                     </div>
 
-                                </div>
+                                </div> --}}
 
                                 {{-- PURE OT HOURS --}}
                                 <div class="bg-white border rounded-xl p-4">
@@ -356,7 +371,7 @@
                                 <div class="bg-white border rounded-xl p-4">
 
                                     <div class="text-xs text-gray-500">
-                                        Premium Earnings
+                                        Total Overtime Pay
                                     </div>
 
                                     <div class="text-2xl font-bold text-green-600">
@@ -1075,7 +1090,7 @@
                                                             {{ number_format($att->overtime_hours, 2) }}
                                                         </div>
 
-                                                        <div class="text-xs">
+                                                        {{-- <div class="text-xs">
 
                                                             @if($att->status == 'Regular Holiday')
 
@@ -1103,7 +1118,7 @@
 
                                                             @endif
 
-                                                        </div>
+                                                        </div> --}}
 
                                                     @else
 
@@ -1300,7 +1315,7 @@
                         </div>
 
                         <!-- APPROVE -->
-                        <div class="flex justify-end">
+                        {{-- <div class="flex justify-end">
                             <button
                                 wire:click="approvePayroll"
                                 class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-medium">
@@ -1308,7 +1323,7 @@
                                 Approve Payroll
 
                             </button>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             @else

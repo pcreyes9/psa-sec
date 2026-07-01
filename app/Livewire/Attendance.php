@@ -6,14 +6,25 @@ use Livewire\Component;
 use Carbon\Carbon;
 use App\Models\Employee;
 use App\Models\Attendance as AttendanceModel;
+use App\Models\Setting;
 
 class Attendance extends Component
 {
     public $employees = [];
     public $selectedEmployee = '';
 
+    public $canTimeIn = false;
+    public $canTimeOut = false;
+    public $settings;
+
     public function mount()
     {
+        $this->generateTodayAttendance();
+        $this->settings = Setting::pluck(
+            'value',
+            'key'
+        )->toArray();
+
         $this->employees = Employee::orderBy('employee_code')->get();
     }
 
@@ -146,10 +157,49 @@ class Attendance extends Component
             ->get();
     }
 
+    public function generateTodayAttendance()
+    {
+        Employee::where('status', 'Active')
+            ->each(function ($employee) {
+
+                AttendanceModel::firstOrCreate(
+                    [
+                        'employee_id' => $employee->id,
+                        'attendance_date' => today(),
+                    ],
+                    [
+                        'status' => 'Pending',
+                    ]
+                );
+
+            });
+    }
+
     public function render()
     {
-        return view(
-            'livewire.attendance'
-        );
+        $this->canTimeIn = ! AttendanceModel::where(
+            'employee_id',
+            $this->selectedEmployee
+            )
+            ->whereDate(
+                'attendance_date',
+                today()
+            )
+            ->whereNotNull('time_in')
+            ->exists();
+        
+        $this->canTimeOut = AttendanceModel::where(
+            'employee_id',
+            $this->selectedEmployee
+        )
+        ->whereDate(
+            'attendance_date',
+            today()
+        )
+        ->whereNotNull('time_in')
+        ->whereNull('time_out')
+        ->exists();
+
+        return view('livewire.attendance');
     }
 }
