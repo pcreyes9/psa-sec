@@ -1,5 +1,5 @@
 -- PSA Explorer Attendance Backup
--- Generated: 2026-07-02 11:05:54
+-- Generated: 2026-07-02 11:06:54
 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `attendances`;
@@ -668,60 +668,85 @@ INSERT INTO `attendances`
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (139,1,'2026-07-01 00:00:00',NULL,NULL,0.00,0.00,'Pending',NULL,'2026-07-01 09:50:28','2026-07-01 09:50:28');
+    (139,1,'2026-07-01 00:00:00',NULL,NULL,0.00,0.00,'Sick Leave','LBM','2026-07-01 09:50:28','2026-07-01 14:10:22');
 
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (140,2,'2026-07-01 00:00:00',NULL,NULL,0.00,0.00,'Pending',NULL,'2026-07-01 09:50:28','2026-07-01 09:50:28');
+    (140,2,'2026-07-01 00:00:00','2026-07-01 08:42:00','2026-07-01 19:07:00',10.42,2.42,'Present','','2026-07-01 09:50:28','2026-07-02 10:48:42');
 
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (141,3,'2026-07-01 00:00:00',NULL,NULL,0.00,0.00,'Pending',NULL,'2026-07-01 09:50:28','2026-07-01 09:50:28');
+    (141,3,'2026-07-01 00:00:00','2026-07-01 08:38:00','2026-07-01 17:04:00',8.43,0.00,'Present','','2026-07-01 09:50:28','2026-07-02 10:48:36');
 
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (142,4,'2026-07-01 00:00:00',NULL,NULL,0.00,0.00,'Pending',NULL,'2026-07-01 09:50:28','2026-07-01 09:50:28');
+    (142,4,'2026-07-01 00:00:00','2026-07-01 08:43:00','2026-07-01 18:50:00',10.12,2.12,'Present','','2026-07-01 09:50:28','2026-07-02 10:48:31');
 
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (143,5,'2026-07-01 00:00:00',NULL,NULL,0.00,0.00,'Pending',NULL,'2026-07-01 09:50:28','2026-07-01 09:50:28');
+    (143,5,'2026-07-01 00:00:00','2026-07-01 08:38:00','2026-07-01 17:11:00',8.55,0.00,'Present','','2026-07-01 09:50:28','2026-07-02 10:48:26');
 
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (144,6,'2026-07-01 00:00:00','2026-07-01 08:38:00',NULL,0.00,0.00,'Pending','','2026-07-01 09:50:28','2026-07-01 10:42:35');
+    (144,6,'2026-07-01 00:00:00','2026-07-01 08:38:00','2026-07-01 17:03:00',8.42,0.00,'Present','','2026-07-01 09:50:28','2026-07-02 10:48:21');
 
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (145,1,'2026-07-02 00:00:00','2026-07-02 08:12:00',NULL,0.00,0.00,'Present','','2026-07-02 10:39:05','2026-07-02 10:45:41');
+    (145,9,'2026-07-01 00:00:00','2026-07-01 08:35:00','2026-07-01 17:06:00',8.52,0.00,'Present','',NULL,'2026-07-02 10:48:09');
 
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (146,2,'2026-07-02 00:00:00',NULL,NULL,0.00,0.00,'Pending',NULL,'2026-07-02 10:39:05','2026-07-02 10:39:05');
+    (146,10,'-0001-11-30 00:00:00',NULL,NULL,0.00,0.00,'Pending',NULL,'2026-07-01 14:00:51','2026-07-01 14:00:51');
 
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (147,3,'2026-07-02 00:00:00',NULL,NULL,0.00,0.00,'Pending',NULL,'2026-07-02 10:39:05','2026-07-02 10:39:05');
+    (147,10,'2026-07-01 00:00:00','2026-07-01 08:45:00','2026-07-01 17:06:00',8.35,0.00,'Present','',NULL,'2026-07-02 10:48:15');
 
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (148,4,'2026-07-02 00:00:00',NULL,NULL,0.00,0.00,'Pending',NULL,'2026-07-02 10:39:05','2026-07-02 10:39:05');
+    (148,5,'2026-07-02 00:00:00','2026-07-02 08:30:00',NULL,0.00,0.00,'Present',NULL,'2026-07-02 08:30:00','2026-07-02 08:30:00');
 
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (149,5,'2026-07-02 00:00:00',NULL,NULL,0.00,0.00,'Pending',NULL,'2026-07-02 10:39:05','2026-07-02 10:39:05');
+    (149,3,'2026-07-02 00:00:00','2026-07-02 08:33:47',NULL,0.00,0.00,'Present',NULL,'2026-07-02 08:33:47','2026-07-02 08:33:47');
 
 INSERT INTO `attendances`
     (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
     VALUES
-    (150,6,'2026-07-02 00:00:00',NULL,NULL,0.00,0.00,'Pending',NULL,'2026-07-02 10:39:05','2026-07-02 10:39:05');
+    (150,10,'2026-07-02 00:00:00','2026-07-02 08:44:19',NULL,0.00,0.00,'Present',NULL,'2026-07-02 08:44:19','2026-07-02 08:44:19');
+
+INSERT INTO `attendances`
+    (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
+    VALUES
+    (151,6,'2026-07-02 00:00:00','2026-07-02 08:51:11',NULL,0.00,0.00,'Present',NULL,'2026-07-02 08:51:11','2026-07-02 08:51:11');
+
+INSERT INTO `attendances`
+    (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
+    VALUES
+    (152,1,'2026-07-02 00:00:00','2026-07-02 08:06:00',NULL,0.00,0.00,'Present','','2026-07-02 08:51:50','2026-07-02 10:47:48');
+
+INSERT INTO `attendances`
+    (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
+    VALUES
+    (153,2,'2026-07-02 00:00:00','2026-07-02 08:53:03',NULL,0.00,0.00,'Present',NULL,'2026-07-02 08:51:50','2026-07-02 08:53:03');
+
+INSERT INTO `attendances`
+    (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
+    VALUES
+    (154,4,'2026-07-02 00:00:00','2026-07-02 08:53:13',NULL,0.00,0.00,'Present',NULL,'2026-07-02 08:51:50','2026-07-02 08:53:13');
+
+INSERT INTO `attendances`
+    (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
+    VALUES
+    (155,9,'2026-07-02 00:00:00','2026-07-02 08:16:00',NULL,0.00,0.00,'Present','','2026-07-02 08:51:50','2026-07-02 10:48:02');
 
