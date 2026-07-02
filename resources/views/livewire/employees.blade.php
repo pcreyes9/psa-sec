@@ -44,7 +44,7 @@
         </div>
 
         <!-- SEARCH CARD -->
-        <div class="bg-white rounded-2xl shadow border border-gray-200 p-5">
+        {{-- <div class="bg-white rounded-2xl shadow border border-gray-200 p-5">
 
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
@@ -77,7 +77,7 @@
 
             </div>
 
-        </div>
+        </div> --}}
 
     </div>
 

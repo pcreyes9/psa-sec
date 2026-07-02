@@ -31,7 +31,7 @@ class Employees extends Component
 
     public function mount()
     {
-        $this->employees = Employee::latest()->get();
+        $this->employees = Employee::orderBy('id')->get();
         // dd($this->employees);
     }
 
