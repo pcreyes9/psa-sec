@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\Attendance;
 use Carbon\Carbon;
 use App\Models\Setting;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class EmployeeAttendance extends Component
 {
@@ -225,6 +226,86 @@ class EmployeeAttendance extends Component
         session()->flash(
             'success',
             'Attendance updated successfully.'
+        );
+    }
+
+    public function exportAttendanceSql()
+    {
+        $attendances = Attendance::orderBy('id')->get();
+
+        $sql = "-- PSA Explorer Attendance Backup\n";
+        $sql .= "-- Generated: " . now() . "\n\n";
+
+        $sql .= "SET FOREIGN_KEY_CHECKS=0;\n";
+        $sql .= "TRUNCATE TABLE `attendances`;\n";
+        $sql .= "SET FOREIGN_KEY_CHECKS=1;\n\n";
+
+        foreach ($attendances as $attendance) {
+
+            $sql .= sprintf(
+
+                "INSERT INTO `attendances`
+    (`id`,`employee_id`,`attendance_date`,`time_in`,`time_out`,`total_hours`,`overtime_hours`,`status`,`remarks`,`created_at`,`updated_at`)
+    VALUES
+    (%d,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s);\n",
+
+                $attendance->id,
+
+                $attendance->employee_id,
+
+                $attendance->attendance_date
+                    ? "'" . $attendance->attendance_date . "'"
+                    : "NULL",
+
+                $attendance->time_in
+                    ? "'" . $attendance->time_in . "'"
+                    : "NULL",
+
+                $attendance->time_out
+                    ? "'" . $attendance->time_out . "'"
+                    : "NULL",
+
+                $attendance->total_hours,
+
+                $attendance->overtime_hours,
+
+                $attendance->status
+                    ? "'" . addslashes($attendance->status) . "'"
+                    : "NULL",
+
+                $attendance->remarks !== null
+                    ? "'" . addslashes($attendance->remarks) . "'"
+                    : "NULL",
+
+                $attendance->created_at
+                    ? "'" . $attendance->created_at . "'"
+                    : "NULL",
+
+                $attendance->updated_at
+                    ? "'" . $attendance->updated_at . "'"
+                    : "NULL"
+
+            );
+
+            $sql .= "\n";
+        }
+
+        $backupPath = base_path();
+
+        if (!is_dir($backupPath)) {
+            mkdir($backupPath, 0777, true);
+        }
+
+        $filename = 'Attendance-' . now()->format('Y-m-d') . '.sql';
+
+        file_put_contents(
+            base_path($filename),
+            $sql
+        );
+
+        session()->flash(
+            'success',
+            "Attendance backup saved successfully to {$filename}"
         );
     }
 

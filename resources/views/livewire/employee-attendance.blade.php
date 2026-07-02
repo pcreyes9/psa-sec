@@ -1,4 +1,5 @@
 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <x-flash-message/>
 
     <!-- LEFT PANEL -->
     <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
@@ -18,6 +19,7 @@
 
         <!-- EMPLOYEE LIST -->
         <div class="max-h-[85vh] overflow-y-auto p-2 space-y-1">
+            
 
             @foreach($employees as $emp)
 
@@ -57,6 +59,14 @@
 
     <!-- RIGHT PANEL -->
     <div class="lg:col-span-3 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+        
+        <button
+            wire:click="exportAttendanceSql"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg m-5">
+
+            Export Attendance SQL
+
+        </button>
 
         @if($selectedEmployee)
 
