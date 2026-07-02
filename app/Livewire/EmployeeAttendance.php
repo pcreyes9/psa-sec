@@ -143,6 +143,7 @@ class EmployeeAttendance extends Component
         $overtimeHours = 0;
 
         if ($this->editTimeIn) {
+            $this->editStatus = 'Present';
 
             $timeIn = Carbon::parse(
                 $this->editDate . ' ' . $this->editTimeIn
@@ -165,6 +166,7 @@ class EmployeeAttendance extends Component
         }
 
         if ($timeIn && $timeOut) {
+            
 
             $adjustedTimeIn = $timeIn->copy();
 
