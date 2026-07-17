@@ -35,17 +35,21 @@ class EmployeeAttendance extends Component
 
     public $settings = [];
 
+    public $allowOvertime = true;
+
+    public $calculatedOvertimeHours = 0;
+
     public function mount()
-{
-    $this->employees = Employee::where('status', 'Active')->orderBy('id')->get();
+    {
+        $this->employees = Employee::where('status', 'Active')->orderBy('id')->get();
 
-    $this->month = now()->format('Y-m');
+        $this->month = now()->format('Y-m');
 
-    $this->settings = Setting::pluck(
-        'value',
-        'key'
-    )->toArray();
-}
+        $this->settings = Setting::pluck(
+            'value',
+            'key'
+        )->toArray();
+    }
     public function selectEmployee($id)
     {
         $this->selectedEmployee = Employee::find($id);
@@ -98,7 +102,7 @@ class EmployeeAttendance extends Component
         $this->attendance = $query
             ->orderBy('attendance_date', 'desc')
             ->get();
-            
+
         $this->cutoffTotalHours = $this->attendance->sum('total_hours');
     }
 
@@ -129,13 +133,19 @@ class EmployeeAttendance extends Component
         $this->editRemarks = $attendance->remarks ?? '';
 
         $this->showEditModal = true;
+
+        $this->calculatedOvertimeHours = $attendance->overtime_hours;
+        $this->allowOvertime = $attendance->overtime_hours > 0;
     }
 
     public function saveAttendance()
     {
+
         $attendance = Attendance::findOrFail(
             $this->attendanceId
         );
+
+        // dd($attendance);
 
         $timeIn = null;
         $timeOut = null;
@@ -167,53 +177,76 @@ class EmployeeAttendance extends Component
         }
 
         if ($timeIn && $timeOut) {
-            
 
-            $adjustedTimeIn = $timeIn->copy();
+
+            $officialTimeIn = Carbon::parse(
+                $timeIn->format('Y-m-d') . ' ' .
+                $this->settings['official_time_in']
+            );
+
+            $officialTimeOut = Carbon::parse(
+                $timeIn->format('Y-m-d') . ' ' .
+                $this->settings['official_time_out']
+            );
+
+            // Overnight schedule support
+            if ($officialTimeOut->lte($officialTimeIn)) {
+                $officialTimeOut->addDay();
+            }
 
             $graceTime = Carbon::parse(
                 $timeIn->format('Y-m-d') . ' ' .
                 $this->settings['grace_period_time']
             );
 
-            // Within grace period:
-            // 8:13 -> 8:00
-            // 8:10 -> 8:00
-            if ($timeIn->lessThanOrEqualTo($graceTime)) {
+            // EARLY or within grace → use official start
+            if ($timeIn->lte($graceTime)) {
 
-                $adjustedTimeIn->startOfHour();
+                $adjustedTimeIn = $officialTimeIn;
+
+            } else {
+
+                // Late
+                $adjustedTimeIn = $timeIn->copy();
             }
 
-            // Use adjusted time for ALL payroll computations
-
+            // Total worked hours
             $totalHours = round(
                 $adjustedTimeIn->diffInMinutes($timeOut) / 60,
                 2
             );
 
-            $workingHours = (float)
-                $this->settings['working_hours_per_day'];
+            // Overtime starts AFTER official timeout
+            $overtimeHours = 0;
 
-            $computedOT = max(
-                0,
-                $totalHours - $workingHours
-            );
+            if ($timeOut->gt($officialTimeOut)) {
 
-            // Ignore OT <= 1 hour
+                $actualOT = round(
+                    $officialTimeOut->diffInMinutes($timeOut) / 60,
+                    2
+                );
 
-            $overtimeHours = $computedOT > 1
-                ? round($computedOT, 2)
-                : 0;
+                // Ignore first hour
+                if ($actualOT > .99) {
+
+                    $overtimeHours = $actualOT;
+                }
+            }
         }
+        // dd([
+        //     'allowOvertime' => $this->allowOvertime,
+        //     'overtimeHours' => $overtimeHours,
+        // ]);
 
-        // dd($overtimeHours);
         $attendance->update([
 
             'attendance_date' => $this->editDate,
             'time_in' => $timeIn,
             'time_out' => $timeOut,
             'total_hours' => $totalHours,
-            'overtime_hours' => $overtimeHours,
+            'overtime_hours' => $this->allowOvertime
+                ? $overtimeHours
+                : 0,
             'status' => $this->editStatus,
             'remarks' => $this->editRemarks,
 

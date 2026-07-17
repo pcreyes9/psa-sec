@@ -19,7 +19,7 @@
 
         <!-- EMPLOYEE LIST -->
         <div class="max-h-[85vh] overflow-y-auto p-2 space-y-1">
-            
+
 
             @foreach($employees as $emp)
 
@@ -59,7 +59,7 @@
 
     <!-- RIGHT PANEL -->
     <div class="lg:col-span-3 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-        
+
         <button
             wire:click="exportAttendanceSql"
             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg m-5">
@@ -96,7 +96,7 @@
                             <span>
                                 {{ $selectedEmployee->position }}
                             </span>
-                            
+
                         </div>
 
                     </div>
@@ -499,41 +499,93 @@
 
                     </div>
 
-                    <div>
+                    <div class="grid grid-cols-2 gap-4">
 
-                        <label class="text-sm text-gray-500">
-                            Status
-                        </label>
+                        <div>
+                            <label class="text-sm text-gray-500">
+                                Status
+                            </label>
 
-                        <select
-                            wire:model="editStatus"
-                            class="w-full mt-1 border rounded-xl p-2">
+                            <select
+                                wire:model="editStatus"
+                                class="w-full mt-1 border rounded-xl p-2">
 
-                            <option value="Present">Present</option>
-                            <option value="Late">Late</option>
-                            <option value="Half Day">Half Day</option>
-                            <option value="Absent">Absent</option>
+                                <option value="Present">Present</option>
+                                <option value="Late">Late</option>
+                                <option value="Half Day">Half Day</option>
+                                <option value="Absent">Absent</option>
 
-                            <option value="Half Day - VL">Half Day - VL</option>
-                            <option value="Half Day - SL">Half Day - SL</option>
+                                <option value="Half Day - VL">Half Day - VL</option>
+                                <option value="Half Day - SL">Half Day - SL</option>
 
-                            <option value="Vacation Leave">
-                                Vacation Leave
-                            </option>
+                                <option value="Vacation Leave">
+                                    Vacation Leave
+                                </option>
 
-                            <option value="Sick Leave">
-                                Sick Leave
-                            </option>
+                                <option value="Sick Leave">
+                                    Sick Leave
+                                </option>
 
-                            <option value="Regular Holiday">
-                                Regular Holiday
-                            </option>
+                                <option value="Regular Holiday">
+                                    Regular Holiday
+                                </option>
 
-                            <option value="Special Non-Working Holiday">
-                                Special Non-Working Holiday
-                            </option>
+                                <option value="Special Non-Working Holiday">
+                                    Special Non-Working Holiday
+                                </option>
 
-                        </select>
+                            </select>
+                        </div>
+
+                        <div class="mt-4 border rounded-xl p-4 bg-gray-50">
+
+                            <div class="flex items-center justify-between">
+
+                                <div>
+                                    <label class="text-sm font-medium text-gray-700">
+                                        Overtime
+                                    </label>
+
+                                    <p class="text-xs text-gray-500">
+                                        Calculated OT: <span class="font-semibold text-blue-600">
+                                            {{ number_format($calculatedOvertimeHours ?? 0, 2) }} hrs
+                                        </span>
+                                    </p>
+                                </div>
+
+                                <label class="relative inline-flex items-center cursor-pointer">
+
+                                    <input
+                                        type="checkbox"
+                                        wire:model.live="allowOvertime"
+                                        class="sr-only peer"
+                                        {{-- @disabled($calculatedOvertimeHours <= 0) --}}
+                                    >
+                                    <div
+                                        class="w-11 h-6 bg-gray-300 rounded-full
+                                            peer peer-checked:bg-green-600
+                                            after:absolute
+                                            after:content-['']
+                                            after:top-[2px]
+                                            after:left-[2px]
+                                            after:bg-white
+                                            after:border
+                                            after:rounded-full
+                                            after:h-5
+                                            after:w-5
+                                            after:transition-all
+                                            peer-checked:after:translate-x-full">
+                                    </div>
+
+                                </label>
+
+                            </div>
+
+                            <p class="mt-2 text-xs text-gray-500">
+                                {{ $allowOvertime ? 'Overtime will be included in payroll.' : 'Overtime will not be counted.' }}
+                            </p>
+
+                        </div>
 
                     </div>
 
