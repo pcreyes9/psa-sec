@@ -39,6 +39,13 @@ class EmployeeAttendance extends Component
 
     public $calculatedOvertimeHours = 0;
 
+    public $showAddAttendanceModal = false;
+
+    public $newAttendanceDate;
+
+    public $selectedEmployees = [];
+    public $existingAttendance = [];
+
     public function mount()
     {
         $this->employees = Employee::where('status', 'Active')->orderBy('id')->get();
@@ -50,6 +57,100 @@ class EmployeeAttendance extends Component
             'key'
         )->toArray();
     }
+
+    public function openAddAttendanceModal()
+    {
+        $this->reset([
+            'selectedEmployees',
+        ]);
+
+        $this->newAttendanceDate = now()->toDateString();
+
+        $this->employees = Employee::where('status', 'Active')
+            ->orderBy('name')
+            ->get();
+
+        $this->loadExistingAttendance();
+        $this->showAddAttendanceModal = true;
+    }
+    public function selectAllEmployees()
+    {
+        $this->selectedEmployees = Employee::where('status', 'Active')
+            ->whereNotIn('id', $this->existingAttendance)
+            ->pluck('id')
+            ->toArray();
+    }
+
+    public function clearEmployees()
+    {
+        $this->selectedEmployees = [];
+    }
+
+    public function updatedNewAttendanceDate()
+    {
+        // dd($this->newAttendanceDate);
+        $this->loadExistingAttendance();
+    }
+
+    public function generateAttendance()
+    {
+        $this->validate([
+            'newAttendanceDate' => [
+                'required',
+                'date',
+            ],
+            'selectedEmployees' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+        ]);
+
+        foreach ($this->selectedEmployees as $employeeId) {
+
+            Attendance::firstOrCreate(
+                [
+                    'employee_id' => $employeeId,
+                    'attendance_date' => $this->newAttendanceDate,
+                ],
+                [
+                    'status' => 'Pending',
+                    'time_in' => null,
+                    'time_out' => null,
+                    'total_hours' => 0,
+                    'overtime_hours' => 0,
+                    'remarks' => null,
+                ]
+            );
+        }
+
+        $this->showAddAttendanceModal = false;
+
+        $this->loadAttendance();
+
+        session()->flash(
+            'success',
+            'Attendance generated successfully.'
+        );
+    }
+    public function loadExistingAttendance()
+    {
+        $this->existingAttendance = Attendance::whereDate(
+                'attendance_date',
+                $this->newAttendanceDate
+            )
+            ->pluck('employee_id')
+            ->toArray();
+
+        // Remove already-existing employees from the selection
+        $this->selectedEmployees = array_values(
+            array_diff(
+                $this->selectedEmployees,
+                $this->existingAttendance
+            )
+        );
+    }
+
     public function selectEmployee($id)
     {
         $this->selectedEmployee = Employee::find($id);

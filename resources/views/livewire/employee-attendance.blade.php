@@ -62,9 +62,17 @@
 
         <button
             wire:click="exportAttendanceSql"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg m-5">
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg m-3">
 
             Export Attendance SQL
+
+        </button>
+
+        <button
+            wire:click="openAddAttendanceModal"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+
+            Add Attendance Date
 
         </button>
 
@@ -620,6 +628,157 @@
                         class="px-4 py-2 bg-blue-600 text-white rounded-xl">
 
                         Save Changes
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    @endif
+
+    @if($showAddAttendanceModal)
+
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4">
+
+                <div class="p-5 border-b">
+
+                    <h2 class="text-xl font-bold text-gray-800">
+                        Add Attendance Date
+                    </h2>
+
+                </div>
+
+                <div class="p-5">
+
+                    <div>
+
+                        <label class="text-sm text-gray-500">
+                            Attendance Date
+                        </label>
+
+                        <input
+                            type="date"
+                            wire:model.live="newAttendanceDate"
+                            class="w-full mt-1 border rounded-xl p-2">
+
+                    </div>
+
+                    <div class="mt-6">
+
+                        <div class="flex justify-between items-center">
+
+                            <label class="text-sm font-medium">
+                                Employees
+                            </label>
+
+                            <div class="space-x-2">
+
+                                <button
+                                    type="button"
+                                    wire:click="selectAllEmployees"
+                                    class="text-xs text-blue-600 hover:underline">
+                                    Select All
+                                </button>
+
+                                <button
+                                    type="button"
+                                    wire:click="clearEmployees"
+                                    class="text-xs text-red-600 hover:underline">
+                                    Clear
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mt-3 border rounded-xl h-72 overflow-y-auto p-3">
+
+                            @foreach($employees as $employee)
+
+                                @php
+                                    $exists = in_array($employee->id, $existingAttendance);
+                                @endphp
+
+                                <label
+                                    class="flex items-center justify-between p-3 rounded-xl border mb-2
+
+                                        {{ $exists
+                                            ? 'bg-gray-100 opacity-60 cursor-not-allowed'
+                                            : 'hover:bg-gray-50' }}">
+
+                                    <div class="flex items-center gap-3">
+
+                                        <input
+                                            type="checkbox"
+                                            value="{{ $employee->id }}"
+                                            wire:model.live="selectedEmployees"
+                                            @disabled($exists)
+
+                                        >
+
+                                        <div>
+
+                                            <div class="font-medium">
+                                                {{ $employee->name }}
+                                            </div>
+
+                                            <div class="text-xs text-gray-500">
+                                                {{ $employee->employee_code }}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    @if($exists)
+
+                                        <span class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-700">
+                                            Already Added
+                                        </span>
+
+                                    @endif
+
+                                </label>
+
+                            @endforeach
+
+                        </div>
+
+                        <p class="mt-3 text-sm text-gray-500">
+
+                            Selected:
+                            <span class="font-semibold">
+                                {{ count($selectedEmployees) }}
+                            </span>
+
+                            employee(s)
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="p-5 border-t flex justify-end gap-2">
+
+                    <button
+                        wire:click="$set('showAddAttendanceModal', false)"
+                        class="px-4 py-2 border rounded-xl">
+
+                        Cancel
+
+                    </button>
+
+                    <button
+                        wire:click="generateAttendance"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-xl">
+
+                        Generate Attendance
 
                     </button>
 
