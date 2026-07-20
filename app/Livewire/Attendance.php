@@ -11,7 +11,7 @@ use App\Models\Setting;
 class Attendance extends Component
 {
     public $employees = [];
-    public $selectedEmployee = '';
+    public $selectedEmployee = 0;
 
     public $canTimeIn = false;
     public $canTimeOut = false;
@@ -19,6 +19,7 @@ class Attendance extends Component
 
     public function mount()
     {
+        
         $this->generateTodayAttendance();
         $this->settings = Setting::pluck(
             'value',
@@ -26,6 +27,7 @@ class Attendance extends Component
         )->toArray();
 
         $this->employees = Employee::orderBy('employee_code')->get();
+        
     }
 
     public function timeIn()
@@ -173,10 +175,12 @@ class Attendance extends Component
                 );
 
             });
+            
     }
 
     public function render()
     {
+        // dd($this->selectedEmployee);
         $this->canTimeIn = ! AttendanceModel::where(
             'employee_id',
             $this->selectedEmployee
@@ -187,6 +191,7 @@ class Attendance extends Component
             )
             ->whereNotNull('time_in')
             ->exists();
+        // dd('test');
         
         $this->canTimeOut = AttendanceModel::where(
             'employee_id',
@@ -199,6 +204,8 @@ class Attendance extends Component
         ->whereNotNull('time_in')
         ->whereNull('time_out')
         ->exists();
+
+        
 
         return view('livewire.attendance');
     }
