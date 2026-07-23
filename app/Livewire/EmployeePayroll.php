@@ -253,7 +253,7 @@ class EmployeePayroll extends Component
         $workingHours =
             $this->settings['working_hours_per_day'];
 
-        foreach ($this->attendanceRecords as $att) {    
+        foreach ($this->attendanceRecords as $att) {
 
             if (!$att->time_in || !$att->time_out) {
                 continue;
@@ -263,13 +263,10 @@ class EmployeePayroll extends Component
             // DATETIME PREPARATION
             // ======================================
 
-            $attendanceDate = Carbon::parse(
-                $att->attendance_date
-            );
+            $attendanceDate = Carbon::parse($att->attendance_date);
 
             $timeIn = Carbon::parse($att->time_in);
             $timeOut = Carbon::parse($att->time_out);
-
 
             // Overnight shift
             if ($timeOut->lt($timeIn)) {
@@ -278,24 +275,49 @@ class EmployeePayroll extends Component
 
             $isWeekend = $attendanceDate->isWeekend();
 
-            $hours = round(
-                $timeIn->diffInMinutes($timeOut) / 60,
-                2
+            // ======================================
+            // OFFICIAL SCHEDULE
+            // ======================================
+
+            $officialTimeIn = Carbon::parse(
+                $attendanceDate->format('Y-m-d') . ' ' .
+                $this->settings['official_time_in']
             );
+
+            $officialTimeOut = Carbon::parse(
+                $attendanceDate->format('Y-m-d') . ' ' .
+                $this->settings['official_time_out']
+            );
+
+            if ($officialTimeOut->lte($officialTimeIn)) {
+                $officialTimeOut->addDay();
+            }
+
+            $graceTime = Carbon::parse(
+                $attendanceDate->format('Y-m-d') . ' ' .
+                $this->settings['grace_period_time']
+            );
+
+            // ======================================
+            // ADJUSTED TIME IN
+            // Same logic used when saving attendance
+            // ======================================
+
+            $adjustedTimeIn = $timeIn->lte($graceTime)
+                ? $officialTimeIn
+                : $timeIn->copy();
 
             // ======================================
             // REGULAR & OT HOURS
+            // Use saved computation
             // ======================================
 
-            $regularHours = min(
-                $hours,
-                $workingHours
+            $regularHours = max(
+                0,
+                $att->total_hours - $att->overtime_hours
             );
 
-            $otHours = max(
-                0,
-                $hours - $workingHours
-            );
+            $otHours = $att->overtime_hours;
 
             // ======================================
             // NIGHT DIFFERENTIAL
@@ -311,29 +333,41 @@ class EmployeePayroll extends Component
                 ->addDay()
                 ->setTime(6, 0);
 
-            $overlapStart = $timeIn->max($ndStart);
-            $overlapEnd = $timeOut->min($ndEnd);
+            // Regular ND
+            $regularNdStart = $adjustedTimeIn->max($ndStart);
+            $regularNdEnd = $officialTimeOut->min($ndEnd);
 
-            $ndHours = 0;
+            $regularNdHours = 0;
 
-            if ($overlapStart->lt($overlapEnd)) {
+            if ($regularNdStart->lt($regularNdEnd)) {
 
-                $ndHours = round(
-                    $overlapStart
-                        ->diffInMinutes($overlapEnd) / 60,
+                $regularNdHours = round(
+                    $regularNdStart->diffInMinutes($regularNdEnd) / 60,
                     2
                 );
             }
 
-            // ======================================
-            // OT + ND SPLIT
-            // ======================================
+            // OT ND
+            $otNdHours = 0;
 
-            $otNdHours = min(
-                $otHours,
-                $ndHours
-            );
+            if ($otHours > 0) {
 
+                $otStart = $officialTimeOut->copy();
+
+                $otOverlapStart = $otStart->max($ndStart);
+                $otOverlapEnd = $timeOut->min($ndEnd);
+
+                if ($otOverlapStart->lt($otOverlapEnd)) {
+
+                    $otNdHours = round(
+                        $otOverlapStart
+                            ->diffInMinutes($otOverlapEnd) / 60,
+                        2
+                    );
+                }
+            }
+
+            // OT without ND
             $pureOtHours = max(
                 0,
                 $otHours - $otNdHours
@@ -349,10 +383,7 @@ class EmployeePayroll extends Component
                 $this->regHolidayOtHours += $pureOtHours;
                 $this->regHolidayOtNdHours += $otNdHours;
 
-            } elseif (
-                $att->status ===
-                'Special Non-Working Holiday'
-            ) {
+            } elseif ($att->status === 'Special Non-Working Holiday') {
 
                 $this->nonWorkingHolidayHours += $regularHours;
                 $this->nonWorkingHolidayOtHours += $pureOtHours;
@@ -369,24 +400,18 @@ class EmployeePayroll extends Component
                 $this->regularHours += $regularHours;
                 $this->weekdayOtHours += $pureOtHours;
                 $this->weekdayOtNdHours += $otNdHours;
+
             }
 
             // ======================================
-            // LATE COMPUTATION
+            // LATE MINUTES
             // ======================================
-
-            $graceTime = $attendanceDate
-                ->copy()
-                ->setTimeFromTimeString(
-                    $this->settings['grace_period_time']
-                );
 
             if ($timeIn->gt($graceTime)) {
 
                 $this->lateMinutes +=
-                    $graceTime->diffInMinutes(
-                        $timeIn
-                    );
+                    $graceTime->diffInMinutes($timeIn);
+
             }
 
             // ======================================
